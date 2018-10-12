@@ -449,6 +449,11 @@
               <FileType>1</FileType>
               <FilePath>.\Drivers\mcp23x17.c</FilePath>
             </File>
+            <File>
+              <FileName>pcf8574.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\pcf8574.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
