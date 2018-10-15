@@ -10,12 +10,12 @@ void I2CInit(){
 	/* calculated in I2C timing configuration tool*/
 	I2C1->TIMINGR = 0x00901A53;
 	I2C1->CR1 |= I2C_CR1_PE;
-
+	
+	/*AF1 (I2C) on PB6(SCL) and PB7(SDA) */
 	GPIOB->AFR[0] |= (1<<24)|(1<<28);
 	GPIOB->MODER 	|=  (GPIO_MODER_MODER7_1|GPIO_MODER_MODER6_1);
 	GPIOB->OTYPER	|=  (GPIO_OTYPER_OT_7|GPIO_OTYPER_OT_6);
 	GPIOB->BSRR |=GPIO_BSRR_BS_6|GPIO_BSRR_BS_7;
-	/*AF1 (I2C) on PB6 and PB7 */
 
 }
  
