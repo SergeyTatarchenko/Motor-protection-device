@@ -19,6 +19,14 @@ static uint8_t _a_[]={LETTER_a};
 static uint8_t _g_[]={LETTER_g};
 static uint8_t _e_[]={LETTER_e};
 
+static uint8_t TCH[]={CHAR_TCH};
+static uint8_t PRB[]={CHAR_PRB};
+
+static uint8_t __1[]={NUMBER_1};
+static uint8_t __4[]={NUMBER_4};
+static uint8_t __7[]={NUMBER_7};
+
+
 /*lcd basic configuration */
 uint_least8_t Init_LCD_1602(void){
 	
@@ -64,6 +72,18 @@ uint_least8_t LCD_WriteText(){
 	state &= I2CSendData(PCF8574_ADRESS,_g_,sizeof(_g_));
 	DELAY(2);
 	state &= I2CSendData(PCF8574_ADRESS,_e_,sizeof(_e_));
+	DELAY(2);
+	state &= I2CSendData(PCF8574_ADRESS,PRB,sizeof(PRB));
+	DELAY(2);
+	state &= I2CSendData(PCF8574_ADRESS,__1,sizeof(__1));
+	DELAY(2);
+	state &= I2CSendData(PCF8574_ADRESS,TCH,sizeof(TCH));
+	DELAY(2);
+	state &= I2CSendData(PCF8574_ADRESS,__4,sizeof(__4));
+	DELAY(2);
+	state &= I2CSendData(PCF8574_ADRESS,__7,sizeof(__7));
+	DELAY(2);
+	state &= I2CSendData(PCF8574_ADRESS,_V_,sizeof(_V_));
 	DELAY(2);
 	
 	return state;
