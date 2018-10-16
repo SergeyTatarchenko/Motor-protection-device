@@ -22,3 +22,9 @@ void ADC_Init(){
 	/*adc start conversion*/
 	ADC1->CR |= ADC_CR_ADSTART;
 }
+
+uint32_t ADC_CalcValue(void){
+		uint32_t temp;
+		temp = (uint32_t)((ADC1->DR * (uint32_t)ADC_Ref)/(uint32_t)ADC_Depth);
+		return temp;
+}

@@ -14,10 +14,14 @@
 
 #include "FreeRTOSConfig.h"
 
+#include "stdlib.h"
+
+uint32_t itoa(int i,uint8_t *buff);
+
 void vSysInit(void *pvParameters);
 void vInitLCD(void *pvParameters);
 
-void vADCConversion(void *pvParameters);
+void vADC_Conversion(void *pvParameters);
 void vI2CTransfer(void *pvParameters);
 
 #endif
