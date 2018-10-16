@@ -1,4 +1,4 @@
-#include "adc.h"
+#include "stm32f0xx_adc.h"
 
 void ADC_Init(){
 	RCC->AHBENR  |= RCC_AHBENR_GPIOAEN;
@@ -18,6 +18,7 @@ void ADC_Init(){
 	ADC1->CFGR1 |= ADC_CFGR1_CONT;
 	/*channel 1*/
 	ADC1->CHSELR = ADC_CHSELR_CHSEL1;
+	
 	/*adc start conversion*/
 	ADC1->CR |= ADC_CR_ADSTART;
 }

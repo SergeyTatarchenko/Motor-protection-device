@@ -435,24 +435,24 @@
               <FilePath>.\Code\system_stm32f0xx.c</FilePath>
             </File>
             <File>
+              <FileName>stm32f0xx_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\stm32f0xx_adc.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32f0xx_i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Code\stm32f0xx_i2c.c</FilePath>
             </File>
             <File>
+              <FileName>user_tasks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\user_tasks.c</FilePath>
+            </File>
+            <File>
               <FileName>FreeRTOSConfig.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Code\FreeRTOSConfig.h</FilePath>
-            </File>
-            <File>
-              <FileName>adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Code\adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>adc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Code\adc.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -460,14 +460,9 @@
           <GroupName>Drivers</GroupName>
           <Files>
             <File>
-              <FileName>mcp23x17.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Drivers\mcp23x17.c</FilePath>
-            </File>
-            <File>
               <FileName>pcf8574.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Code\pcf8574.c</FilePath>
+              <FilePath>.\Drivers\pcf8574.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -483,11 +478,6 @@
               <FileName>event_groups.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\FreeRTOS\event_groups.c</FilePath>
-            </File>
-            <File>
-              <FileName>heap_1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\FreeRTOS\heap_1.c</FilePath>
             </File>
             <File>
               <FileName>list.c</FileName>
@@ -518,6 +508,11 @@
               <FileName>timers.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\FreeRTOS\timers.c</FilePath>
+            </File>
+            <File>
+              <FileName>heap_2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FreeRTOS\heap_2.c</FilePath>
             </File>
           </Files>
         </Group>

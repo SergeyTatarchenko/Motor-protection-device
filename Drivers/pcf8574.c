@@ -1,4 +1,5 @@
 #include "pcf8574.h"
+
 /**/
 static uint8_t command_1[]={CMD1};
 static uint8_t command_2[]={CMD2};
@@ -11,20 +12,20 @@ static uint8_t command_8[]={CMD8};
 static uint8_t command_9[]={CMD9};
 
 /*ASCII code chart*/
-static uint8_t _V_[]={LETTER_V};
-static uint8_t _o_[]={LETTER_o};
-static uint8_t _l_[]={LETTER_l};
-static uint8_t _t_[]={LETTER_t};
-static uint8_t _a_[]={LETTER_a};
-static uint8_t _g_[]={LETTER_g};
-static uint8_t _e_[]={LETTER_e};
+//static uint8_t _V_[]={LETTER_V};
+//static uint8_t _o_[]={LETTER_o};
+//static uint8_t _l_[]={LETTER_l};
+//static uint8_t _t_[]={LETTER_t};
+//static uint8_t _a_[]={LETTER_a};
+//static uint8_t _g_[]={LETTER_g};
+//static uint8_t _e_[]={LETTER_e};
 
-static uint8_t TCH[]={CHAR_TCH};
-static uint8_t PRB[]={CHAR_PRB};
+//static uint8_t TCH[]={CHAR_TCH};
+//static uint8_t PRB[]={CHAR_PRB};
 
-static uint8_t __1[]={NUMBER_1};
-static uint8_t __4[]={NUMBER_4};
-static uint8_t __7[]={NUMBER_7};
+//static uint8_t __1[]={NUMBER_1};
+//static uint8_t __4[]={NUMBER_4};
+//static uint8_t __7[]={NUMBER_7};
 
 
 /*lcd basic configuration */
@@ -59,32 +60,6 @@ uint_least8_t LCD_Reset(void){
 }
 uint_least8_t LCD_WriteText(){
 	uint_least8_t state;
-	state &= I2CSendData(PCF8574_ADRESS,_V_,sizeof(_V_));
-	DELAY(2);
-	state &= I2CSendData(PCF8574_ADRESS,_o_,sizeof(_o_));
-	DELAY(2);	
-	state &= I2CSendData(PCF8574_ADRESS,_l_,sizeof(_l_));
-	DELAY(2);
-	state &= I2CSendData(PCF8574_ADRESS,_t_,sizeof(_t_));
-	DELAY(2);
-	state &= I2CSendData(PCF8574_ADRESS,_a_,sizeof(_a_));
-	DELAY(2);
-	state &= I2CSendData(PCF8574_ADRESS,_g_,sizeof(_g_));
-	DELAY(2);
-	state &= I2CSendData(PCF8574_ADRESS,_e_,sizeof(_e_));
-	DELAY(2);
-	state &= I2CSendData(PCF8574_ADRESS,PRB,sizeof(PRB));
-	DELAY(2);
-	state &= I2CSendData(PCF8574_ADRESS,__1,sizeof(__1));
-	DELAY(2);
-	state &= I2CSendData(PCF8574_ADRESS,TCH,sizeof(TCH));
-	DELAY(2);
-	state &= I2CSendData(PCF8574_ADRESS,__4,sizeof(__4));
-	DELAY(2);
-	state &= I2CSendData(PCF8574_ADRESS,__7,sizeof(__7));
-	DELAY(2);
-	state &= I2CSendData(PCF8574_ADRESS,_V_,sizeof(_V_));
-	DELAY(2);
 	
 	return state;
 }

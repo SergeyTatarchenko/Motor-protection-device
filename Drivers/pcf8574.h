@@ -2,12 +2,13 @@
 #define PCF8574_H
 
 #include "stm32f0xx_i2c.h"
+
+/************************/
 #include "FreeRTOS.h"
 #include "task.h"
-#include "queue.h"
-
 /*delay implementation*/
 #define DELAY   vTaskDelay
+/************************/
 
 #define PCF8574_ADRESS  0x27
 

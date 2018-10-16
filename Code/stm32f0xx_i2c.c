@@ -46,6 +46,7 @@ uint_least8_t	I2CSendData (uint8_t adress,uint8_t *data, int lenght){
 		return !state;
 	}
 }
+
 uint_least8_t	I2CGetData (uint8_t chip_adress,uint8_t adress_byte, uint8_t *data,int lenght){
 	uint_least8_t state = 0;
 	return state;
