@@ -38,13 +38,9 @@
 #define CHAR_TCH    0x2D,0x29,0xED,0xE9     /*.*/
 #define CHAR_PRB    0x2D,0x29,0x0D,0x09     /* */
 
-#define NUMBER_1    0x3D,0x39,0x1D,0x19     /*1*/
-#define NUMBER_4    0x3D,0x39,0x4D,0x49     /*4*/
-#define NUMBER_7    0x3D,0x39,0x7D,0x79     /*7*/
-
 extern uint_least8_t Init_LCD_1602(void);
 extern uint_least8_t LCD_Reset(void);
 extern uint_least8_t LCD_WriteText(void);
-extern uint_least8_t LCD_WriteLetter(uint8_t *data);
+extern uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress);
 
 #endif

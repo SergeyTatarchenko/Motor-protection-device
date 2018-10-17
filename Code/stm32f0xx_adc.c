@@ -3,7 +3,6 @@
 void ADC_Init(){
 	RCC->AHBENR  |= RCC_AHBENR_GPIOAEN;
 	RCC->APB2ENR |=	RCC_APB2ENR_ADCEN;
-	
 	/*PA1 is ADC1_IN1*/
 	GPIOA->MODER |= GPIO_MODER_MODER1;
 	
@@ -18,11 +17,9 @@ void ADC_Init(){
 	ADC1->CFGR1 |= ADC_CFGR1_CONT;
 	/*channel 1*/
 	ADC1->CHSELR = ADC_CHSELR_CHSEL1;
-	
-	/*adc start conversion*/
-	ADC1->CR |= ADC_CR_ADSTART;
 }
 
+/*calc adc value, return result in mV */
 uint32_t ADC_CalcValue(void){
 		uint32_t temp;
 		temp = (uint32_t)((ADC1->DR * (uint32_t)ADC_Ref)/(uint32_t)ADC_Depth);

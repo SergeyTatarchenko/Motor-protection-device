@@ -12,21 +12,14 @@ static uint8_t command_8[]={CMD8};
 static uint8_t command_9[]={CMD9};
 
 /*ASCII code chart*/
-//static uint8_t _V_[]={LETTER_V};
-//static uint8_t _o_[]={LETTER_o};
-//static uint8_t _l_[]={LETTER_l};
-//static uint8_t _t_[]={LETTER_t};
-//static uint8_t _a_[]={LETTER_a};
-//static uint8_t _g_[]={LETTER_g};
-//static uint8_t _e_[]={LETTER_e};
-
-//static uint8_t TCH[]={CHAR_TCH};
-//static uint8_t PRB[]={CHAR_PRB};
-
-//static uint8_t __1[]={NUMBER_1};
-//static uint8_t __4[]={NUMBER_4};
-//static uint8_t __7[]={NUMBER_7};
-
+static uint8_t _V_[]={LETTER_V};
+static uint8_t _o_[]={LETTER_o};
+static uint8_t _l_[]={LETTER_l};
+static uint8_t _t_[]={LETTER_t};
+static uint8_t _a_[]={LETTER_a};
+static uint8_t _g_[]={LETTER_g};
+static uint8_t _e_[]={LETTER_e};
+static uint8_t PRB[]={CHAR_PRB};
 
 /*lcd basic configuration */
 uint_least8_t Init_LCD_1602(void){
@@ -61,11 +54,55 @@ uint_least8_t LCD_Reset(void){
 uint_least8_t LCD_WriteText(){
 	uint_least8_t state;
 	
+	state =  I2CSendData(PCF8574_ADRESS,_V_,sizeof(_V_));
+	DELAY(3);
+	state =  I2CSendData(PCF8574_ADRESS,_o_,sizeof(_o_));
+	DELAY(3);
+	state =  I2CSendData(PCF8574_ADRESS,_l_,sizeof(_l_));
+	DELAY(3);
+	state =  I2CSendData(PCF8574_ADRESS,_t_,sizeof(_t_));
+	DELAY(3);
+	state =  I2CSendData(PCF8574_ADRESS,_a_,sizeof(_a_));
+	DELAY(3);
+	state =  I2CSendData(PCF8574_ADRESS,_g_,sizeof(_g_));
+	DELAY(3);
+	state =  I2CSendData(PCF8574_ADRESS,_e_,sizeof(_e_));
+	DELAY(3);
+	state =  I2CSendData(PCF8574_ADRESS,PRB,sizeof(PRB));
+	DELAY(3);
+	
 	return state;
 }
 
-uint_least8_t LCD_WriteLetter(uint8_t *data){
-	uint_least8_t state;
-	state = I2CSendData(PCF8574_ADRESS,data,sizeof(data));
+uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress){
+	
+	uint8_t buf[4] = {0,0,0,0};
+	uint8_t letter;
+	uint8_t temp;
+	uint8_t state;
+	
+	buf[0] = 0x0C;
+	buf[2] = 0x0C;
+	
+	buf[1] = 0x08;
+	buf[3] = 0x08;
+	
+	letter = DRAM_adress;
+	letter |= (1<<7);
+	
+	temp = letter;
+	/*high part of byte*/
+	temp &= 0xF0;
+	buf[0] |= temp;
+	buf[1] |= temp;
+	
+	temp = letter;
+	/*low part of byte*/
+	temp &= 0x0F;
+	buf[2] |= temp;
+	buf[3] |= temp;
+	
+	state = I2CSendData(PCF8574_ADRESS,buf,sizeof(buf));
+	DELAY(1);
 	return state;
 }
