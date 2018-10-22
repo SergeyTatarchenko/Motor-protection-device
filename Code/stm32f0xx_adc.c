@@ -20,8 +20,11 @@ void ADC_Init(){
 }
 
 /*calc adc value, return result in mV */
-uint32_t ADC_CalcValue(void){
-		uint32_t temp;
-		temp = (uint32_t)((ADC1->DR * (uint32_t)ADC_Ref)/(uint32_t)ADC_Depth);
+int ADC_CalcValue(void){
+		int temp;
+		temp = (int)((ADC1->DR * (int)ADC_Ref)/(int)ADC_Depth);
+		if ((temp < 0)||(temp>ADC_Ref)){
+			temp = 0;
+		}
 		return temp;
 }

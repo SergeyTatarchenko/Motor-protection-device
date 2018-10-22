@@ -76,19 +76,13 @@ uint_least8_t LCD_WriteText(){
 
 uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress){
 	
-	uint8_t buf[4] = {0,0,0,0};
+	uint8_t buf[4] = {0x0C,0x08,0x0C,0x08};
 	uint8_t letter;
 	uint8_t temp;
 	uint8_t state;
 	
-	buf[0] = 0x0C;
-	buf[2] = 0x0C;
-	
-	buf[1] = 0x08;
-	buf[3] = 0x08;
-	
 	letter = DRAM_adress;
-	letter |= (1<<7);
+	letter |= 0x80;
 	
 	temp = letter;
 	/*high part of byte*/
@@ -99,8 +93,8 @@ uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress){
 	temp = letter;
 	/*low part of byte*/
 	temp &= 0x0F;
-	buf[2] |= temp;
-	buf[3] |= temp;
+	buf[2] |= temp<<4;
+	buf[3] |= temp<<4;
 	
 	state = I2CSendData(PCF8574_ADRESS,buf,sizeof(buf));
 	DELAY(1);

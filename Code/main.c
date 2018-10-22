@@ -1,8 +1,15 @@
 #include "user_tasks.h"
 
-int main(){
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
 
-	xTaskCreate(vSysInit, "Program start", configMINIMAL_STACK_SIZE, NULL, 3, NULL );
+#include "FreeRTOSConfig.h"
+
+int main(){
+	
+	xTaskCreate(vSysInit,"start", configMINIMAL_STACK_SIZE, NULL, 1, NULL );
+	
 	/*run RTOS*/
 	vTaskStartScheduler();
 	
