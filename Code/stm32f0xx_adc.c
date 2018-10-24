@@ -3,8 +3,11 @@
 void ADC_Init(){
 	RCC->AHBENR  |= RCC_AHBENR_GPIOAEN;
 	RCC->APB2ENR |=	RCC_APB2ENR_ADCEN;
-	/*PA1 is ADC1_IN1*/
-	GPIOA->MODER |= GPIO_MODER_MODER1;
+	
+	/*PA1,PA2,PA3 configured as ADC IN*/
+	GPIOA->MODER |= GPIO_MODER_MODER1|
+					GPIO_MODER_MODER2|
+					GPIO_MODER_MODER3;
 	
 	/*adc calibration*/
 	ADC1->CR |= ADC_CR_ADCAL;
@@ -15,14 +18,16 @@ void ADC_Init(){
 	ADC1->CR  |= ADC_CR_ADEN;
 	/*continious mode */
 	ADC1->CFGR1 |= ADC_CFGR1_CONT;
-	/*channel 1*/
-	ADC1->CHSELR = ADC_CHSELR_CHSEL1;
+	/*enable DMA for ADC with circular mode*/
+	ADC1->CFGR1 |= ADC_CFGR1_DMAEN | ADC_CFGR1_DMACFG; 
+	/*channel 1,2,3*/
+	ADC1->CHSELR = ADC_CHSELR_CHSEL1|ADC_CHSELR_CHSEL2|ADC_CHSELR_CHSEL3;
 }
 
 /*calc adc value, return result in mV */
-int ADC_CalcValue(void){
+int ADC_CalcValue(uint32_t data){
 		int temp;
-		temp = (int)((ADC1->DR * (int)ADC_Ref)/(int)ADC_Depth);
+		temp = (int)((data * (int)ADC_Ref)/(int)ADC_Depth);
 		if ((temp < 0)||(temp>ADC_Ref)){
 			temp = 0;
 		}

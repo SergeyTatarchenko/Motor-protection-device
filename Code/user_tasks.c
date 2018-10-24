@@ -1,4 +1,6 @@
+#include <stm32f0xx.h>
 #include "user_tasks.h"
+#include "stm32f0xx_dma.h"
 
 uint8_t TCH[4] ={CHAR_TCH};
 
@@ -6,46 +8,6 @@ uint8_t _PR_[4] ={CHAR_PRB};
 uint8_t _m_[4] ={LETTER_m};
 uint8_t _V_[4] ={LETTER_V};
 
-/*fixed array size*/
-uint8_t VoltageArray[4] ={0,0,0,0};
-
-
-uint32_t itoa(int i,uint8_t *buff){
-	int temp = i;
-	int counter = 0;
-	uint32_t array_size;
-	/*get  number of digits*/
-	while(temp != 0){
-		temp/=10;
-		counter++;
-	}
-	temp = i;
-	array_size = (uint32_t)counter;
-	/*array fill*/
-	do{
-		buff[counter-1] = temp % 10;
-		counter--;
-		temp/=10;
-		
-	}while(counter!=0);
-	if(array_size<4){
-		buff[0] = 0;
-		
-	}
-	if(array_size<3){
-		buff[1] = 0;
-		
-	}
-	if(array_size<2){
-		buff[2] = 0;
-		
-	}
-	if(array_size < 1){
-		buff[3] = 0;
-		
-	}
-	return array_size;
-}
 
 /*init peripherals and start other tasks*/
 void vSysInit(void *pvParameters){
@@ -56,13 +18,24 @@ void vSysInit(void *pvParameters){
 	GPIOC->MODER |= GPIO_MODER_MODER8_0;
 	GPIOC->BSRR |= GPIO_BSRR_BS_9;
 	
-	//	/*init I2C1*/
+	/*init I2C1*/
 	I2CInit();
 	/*inut ADC1*/
 	ADC_Init();
+	/*DMA init*/
+	DMA_InitADC();
+	/*adc start*/
 	ADC_on;
 	
+	
+	/*start I/O model*/
+	CapturedPeriodPointer =&  CapturedPeriod;
+	CapturedVoltagePointer =& CapturedVoltage;
+	VoltageTextLCDPointer =& VoltageTextLCD;
+	
+	/*init LCD1602*/
 	Init_LCD_1602();
+	
 	LCD_WriteText();
 	
 	xTaskCreate(vADC_Conversion, "ADC convertion", configMINIMAL_STACK_SIZE, NULL, 5 , NULL );
@@ -71,6 +44,7 @@ void vSysInit(void *pvParameters){
 	/*delete task*/
 	vTaskDelete(NULL);
 }
+
 /*transmit current voltage to lcd*/	
 void vI2CTransfer(void *pvParameters){
 	uint8_t counter ;
@@ -84,10 +58,11 @@ void vI2CTransfer(void *pvParameters){
 			LCD_SetDRAM_Adress(0x08);
 			
 		
-			for(counter = 0 ; counter < 4; counter++){
-					
-				letter = VoltageArray[counter] + 0x30;
-
+			for(counter = 0 ; counter < DEFAULT_VOLTAGE_BUF_SIZE; counter++){
+				
+				/*phase A test*/
+				letter = VoltageTextLCDPointer->PhaseA_VoltageArray[counter]+0x30;			
+				
 				/*clear buffer*/
 				VoltageBuf[0] = 0x0D;
 				VoltageBuf[1] = 0x09;
@@ -123,15 +98,17 @@ void vI2CTransfer(void *pvParameters){
 /*Create voltage array for lcd transmit, calc value from ADC1*/
 void vADC_Conversion(void *pvParameters){
 	/*variable for ADC value*/
-	int VoltageValue;
 	for(;;){
 		/*get ADC value in mV*/
-		VoltageValue = ADC_CalcValue();
-		/*array fill*/
-		if(VoltageValue > 3300){
-			VoltageValue = 0;
-		}
-		itoa(VoltageValue,VoltageArray);
+		CapturedVoltagePointer->PhaseA_Voltage = ADC_CalcValue(CapturedVoltageArray[0]);
+		CapturedVoltagePointer->PhaseB_Voltage = ADC_CalcValue(CapturedVoltageArray[1]);
+		CapturedVoltagePointer->PhaseC_Voltage = ADC_CalcValue(CapturedVoltageArray[2]);
+		
+		/*convert value to array*/
+		itoa(CapturedVoltagePointer->PhaseA_Voltage,VoltageTextLCDPointer->PhaseA_VoltageArray);
+		itoa(CapturedVoltagePointer->PhaseB_Voltage,VoltageTextLCDPointer->PhaseB_VoltageArray);
+		itoa(CapturedVoltagePointer->PhaseC_Voltage,VoltageTextLCDPointer->PhaseC_VoltageArray);
+		
 		vTaskDelay(50);
 	}
 }

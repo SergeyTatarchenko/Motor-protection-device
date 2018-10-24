@@ -10,5 +10,5 @@
 #define ADC_Depth   4096-1    /*12 bit adc*/
 
 extern void     ADC_Init(void);
-extern int 			ADC_CalcValue(void);
+extern int 		ADC_CalcValue(uint32_t data);
 #endif
