@@ -454,6 +454,16 @@
               <FileType>5</FileType>
               <FilePath>.\Code\FreeRTOSConfig.h</FilePath>
             </File>
+            <File>
+              <FileName>motor_protection.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\motor_protection.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\stm32f0xx_dma.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
