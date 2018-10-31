@@ -16,9 +16,9 @@ typedef struct{
 #pragma pack(push,1)
 typedef struct{
 
-    uint8_t PhaseA_VoltageArray[4];
-    uint8_t PhaseB_VoltageArray[4];
-    uint8_t PhaseC_VoltageArray[4];
+    uint8_t PhaseA_VoltageArray[3];
+    uint8_t PhaseB_VoltageArray[3];
+    uint8_t PhaseC_VoltageArray[3];
 }VoltageTextLCD_REGISTR;
 #pragma pack(pop)
 
@@ -47,10 +47,12 @@ extern uint32_t CapturedVoltageArray[3];
 extern VoltageTextLCD_REGISTR VoltageTextLCD;
 extern VoltageTextLCD_REGISTR *VoltageTextLCDPointer;
 
-#define DEFAULT_VOLTAGE_BUF_SIZE	4
+#define DEFAULT_VOLTAGE_BUF_SIZE	3
 
 
 /*-------------------------------------------*/
 uint32_t itoa(int i,uint8_t *buff);
+
+
 #endif
 

@@ -2,7 +2,7 @@
 #define PCF8574_H
 
 #include "stm32f0xx_i2c.h"
-
+#include "motor_protection.h"
 /************************/
 #include "FreeRTOS.h"
 #include "task.h"
@@ -36,6 +36,10 @@
 #define LETTER_g    0x6D,0x69,0x7D,0x79     /*g*/
 #define LETTER_e    0x6D,0x69,0x5D,0x59     /*e*/
 
+#define LETTER_A    0x4D,0x49,0x1D,0x19     /*A*/
+#define LETTER_B    0x4D,0x49,0x2D,0x29     /*B*/
+#define LETTER_C    0x4D,0x49,0x3D,0x39     /*C*/
+
 #define LETTER_m    0x6D,0x69,0xDD,0xD9     /*m*/
 
 #define CHAR_TCH    0x2D,0x29,0xED,0xE9     /*.*/
@@ -45,5 +49,6 @@ extern uint_least8_t Init_LCD_1602(void);
 extern uint_least8_t LCD_Reset(void);
 extern uint_least8_t LCD_WriteText(void);
 extern uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress);
+extern void LCD_SendChar(uint8_t CharToSend);
 
 #endif

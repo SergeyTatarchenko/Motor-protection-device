@@ -24,12 +24,12 @@ void ADC_Init(){
 	ADC1->CHSELR = ADC_CHSELR_CHSEL1|ADC_CHSELR_CHSEL2|ADC_CHSELR_CHSEL3;
 }
 
-/*calc adc value, return result in mV */
+/*calc adc value, return result in mV/10 */
 int ADC_CalcValue(uint32_t data){
 		int temp;
 		temp = (int)((data * (int)ADC_Ref)/(int)ADC_Depth);
 		if ((temp < 0)||(temp>ADC_Ref)){
 			temp = 0;
 		}
-		return temp;
+		return temp/10;
 }
