@@ -6,4 +6,6 @@
 
 /*-----------global function prototypes---------*/
 extern void GeneralTimerConfig(void);
+extern void EnableTimers(void);
+
 #endif

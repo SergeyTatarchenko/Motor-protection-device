@@ -14,6 +14,6 @@
 void vSysInit(void *pvParameters);
 void vADC_Conversion(void *pvParameters);
 void vI2CTransfer(void *pvParameters);
+void vTIM_PeriodConversion(void *pvParameters);
 
-void vTimerTest(void *pvParameters);
 #endif

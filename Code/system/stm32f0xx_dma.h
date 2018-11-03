@@ -7,4 +7,6 @@
 
 extern void DMA_InitADC(void);
 extern void DMA_InitTIM15(void);
+extern void DMA_InitTIM16(void);
+extern void DMA_InitTIM17(void);
 #endif
