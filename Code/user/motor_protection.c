@@ -16,6 +16,9 @@ CapturedPeriod_REGISTR *CapturedPeriodPointer;
 PeriodLCD_REGISTR PeriodLCD;
 PeriodLCD_REGISTR *PeriodLCDPointer;
 
+/* captured power factor value in mcs */
+PowerFactor_REGISTR PowerFactor;
+PowerFactor_REGISTR *PowerFactorPointer;
 
 /*ADC data from DMA transfer*/
 uint32_t CapturedVoltageArray[3];
@@ -24,12 +27,6 @@ uint32_t CapturedVoltageArray[3];
 uint32_t TIM15_CCR1_Array[2];
 uint32_t TIM16_CCR1_Array[2];
 uint32_t TIM17_CCR1_Array[2];
-
-/*test*/
-uint8_t CapturedPeriodTimer[6];
-uint32_t TestArray[2];
-
-
 
 
 /*convert integer to array*/

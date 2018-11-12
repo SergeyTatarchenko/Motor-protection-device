@@ -46,6 +46,17 @@ typedef struct{
 }PeriodLCD_REGISTR;
 #pragma pack(pop)
 
+
+#pragma pack(push,1)
+typedef struct{
+	
+	uint16_t PhaseA_Factor;
+	uint16_t PhaseB_Factor;
+	uint16_t PhaseC_Factor;
+	
+}PowerFactor_REGISTR;
+#pragma pack(pop)
+
 /*captured voltage from ADC with DMA*/ 
 extern CapturedVoltage_REGISTR CapturedVoltage;
 extern CapturedVoltage_REGISTR *CapturedVoltagePointer;
@@ -62,6 +73,9 @@ extern CapturedPeriod_REGISTR *CapturedPeriodPointer;
 extern PeriodLCD_REGISTR PeriodLCD;
 extern PeriodLCD_REGISTR *PeriodLCDPointer;
 
+/* captured power factor value in mcs */
+extern PowerFactor_REGISTR PowerFactor;
+extern PowerFactor_REGISTR *PowerFactorPointer;
 
 /*ADC data from DMA transfer*/
 extern uint32_t CapturedVoltageArray[3];
@@ -71,9 +85,6 @@ extern uint32_t TIM15_CCR1_Array[2];
 extern uint32_t TIM16_CCR1_Array[2];
 extern uint32_t TIM17_CCR1_Array[2];
 
-/*test*/
-extern uint8_t CapturedPeriodTimer[6];
-extern uint32_t TestArray[2];
 
 /*-------------------------------------------*/
 extern uint32_t itoa(int i,uint8_t *buff, uint8_t MesSize);

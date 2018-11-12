@@ -1,13 +1,9 @@
 #include <stm32f0xx.h>
 #include "user_tasks.h"
+
+/*sys inc*/
 #include "stm32f0xx_dma.h"
-
-uint8_t TCH[4] ={CHAR_TCH};
-
-uint8_t _PR_[4] ={CHAR_PRB};
-uint8_t _m_[4] ={LETTER_m};
-uint8_t _V_[4] ={LETTER_V};
-
+#include "stm32f0xx_ext.h"
 
 /*init peripherals and start other tasks*/
 void vSysInit(void *pvParameters){
@@ -24,20 +20,15 @@ void vSysInit(void *pvParameters){
 	ADC_Init();
 	/*DMA init*/
 	DMA_InitADC();
-	/*adc start*/
-	ADC_on;
 	
 	/*timer init*/
 	GeneralTimerConfig();
-
-
 	/*init DMA for TIM15*/
 	DMA_InitTIM15();
 	/*init DMA for TIM16*/
 	DMA_InitTIM16();
 	/*init DMA for TIM17*/
 	DMA_InitTIM17();
-	
 	/*enable timers*/
 	EnableTimers();
 	
@@ -47,6 +38,18 @@ void vSysInit(void *pvParameters){
 	
 	CapturedPeriodPointer =&  CapturedPeriod;
 	PeriodLCDPointer = &PeriodLCD;
+	
+	PowerFactorPointer = &PowerFactor;
+	
+	
+	/*adc start*/
+	ADC_on;
+
+	/****test****/
+	EXTI_Init();
+	NVIC_Init();
+	/************/
+	
 	
 	/*init LCD1602*/
 	Init_LCD_1602();

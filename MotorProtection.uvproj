@@ -375,7 +375,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\FreeRTOS\include;.\Code\Drivers;.\Code\system;.\Code\user</IncludePath>
+              <IncludePath>.\FreeRTOS\include;.\Code\Drivers;.\Code\system\include;.\Code\user</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -508,6 +508,11 @@
               <FileName>startup_stm32f030.s</FileName>
               <FileType>2</FileType>
               <FilePath>.\Code\system\startup_stm32f030.s</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_ext.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\system\stm32f0xx_ext.c</FilePath>
             </File>
           </Files>
         </Group>
