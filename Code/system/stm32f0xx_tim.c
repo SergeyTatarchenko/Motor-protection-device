@@ -1,9 +1,12 @@
 #include "stm32f0xx_tim.h"
 
 void GeneralTimerConfig(){
-	
+		
 	/*enable clock for TIM15/16/17*/
 	RCC->APB2ENR |= RCC_APB2ENR_TIM15EN|RCC_APB2ENR_TIM16EN|RCC_APB2ENR_TIM17EN;
+	/*enable clock for TIM6/7/14*/
+	RCC->APB1ENR |= RCC_APB1ENR_TIM6EN|RCC_APB1ENR_TIM7EN|RCC_APB1ENR_TIM14EN;
+	
 	/*PORTB clock*/
 	RCC->AHBENR  |=  RCC_AHBENR_GPIOBEN;
 	
@@ -20,7 +23,9 @@ void GeneralTimerConfig(){
 	GPIOB->MODER 	|= GPIO_MODER_MODER9_1;
 	/*AF on PB8*/
 	GPIOB->MODER 	|= GPIO_MODER_MODER8_1;
-
+	
+	/*TIM15/16/17 used for background frequency measurement*/
+	
 	/******** TIM15 config*********/
 	/*Get 1KHz timer*/
 	TIM15->PSC = 48000-1;
@@ -62,7 +67,8 @@ void GeneralTimerConfig(){
 	/*rising edge*/
   	TIM17->CCER &= ~TIM_CCER_CC1P;
 	/*CCP enable*/
-  	TIM17->CCER |= TIM_CCER_CC1E;         
+  	TIM17->CCER |= TIM_CCER_CC1E; 
+
 
 }
 
