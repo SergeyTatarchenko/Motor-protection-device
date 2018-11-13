@@ -12,7 +12,7 @@ void vSysInit(void *pvParameters){
 	RCC->AHBENR  |= RCC_AHBENR_GPIOCEN;
 	GPIOC->MODER |= GPIO_MODER_MODER9_0;
 	GPIOC->MODER |= GPIO_MODER_MODER8_0;
-	GPIOC->BSRR |= GPIO_BSRR_BS_9;
+	GPIOC->BSRR  |= GPIO_BSRR_BS_9;
 	
 	/*init I2C1*/
 	I2CInit();
@@ -30,7 +30,7 @@ void vSysInit(void *pvParameters){
 	/*init DMA for TIM17*/
 	DMA_InitTIM17();
 	/*enable timers*/
-	EnableTimers();
+	EnableGeneralTimers();
 	
 	/*start I/O model*/
 	CapturedVoltagePointer =& CapturedVoltage;
@@ -129,9 +129,15 @@ void vTIM_PeriodConversion(void *pvParameters){
 	
 	for(;;){
 		/*get period value*/
-		CapturedPeriodPointer->PhaseA_Period = TIM15_CCR1_Array[1]-TIM15_CCR1_Array[0];
-		CapturedPeriodPointer->PhaseB_Period = TIM16_CCR1_Array[1]-TIM16_CCR1_Array[0];
-		CapturedPeriodPointer->PhaseC_Period = TIM17_CCR1_Array[1]-TIM17_CCR1_Array[0];
+		if(TIM15_CCR1_Array[1] > TIM15_CCR1_Array[0]){
+			CapturedPeriodPointer->PhaseA_Period = TIM15_CCR1_Array[1]-TIM15_CCR1_Array[0];
+		}
+		if(TIM16_CCR1_Array[1] > TIM16_CCR1_Array[0]){
+			CapturedPeriodPointer->PhaseB_Period = TIM16_CCR1_Array[1]-TIM16_CCR1_Array[0];
+		}
+		if(TIM17_CCR1_Array[1] > TIM17_CCR1_Array[0]){
+			CapturedPeriodPointer->PhaseC_Period = TIM17_CCR1_Array[1]-TIM17_CCR1_Array[0];
+		}
 		
 		/*convert value to array*/
 		itoa(CapturedPeriodPointer->PhaseA_Period,PeriodLCDPointer->PhaseA_PeriodArray,DEFAULT_PERIOD_BUF_SIZE);

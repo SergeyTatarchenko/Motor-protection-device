@@ -39,24 +39,40 @@ void NVIC_Init(){
 /*EXTI line 0 and 1 interrupt handler*/
 void EXTI0_1_IRQHandler(){
 	
+	static portBASE_TYPE xTaskWoken = pdFALSE;
+	/*start measuring the phase shift for phase A and stop for measuring phase B */
+	
 	EXTI->PR |= EXTI_PR_PR0;
 	EXTI->PR |= EXTI_PR_PR1;
 	
+	if(xTaskWoken == pdTRUE){
+		taskYIELD();
+	}
 }
 
 /*EXTI line 2 and 3 interrupt handler*/
 void  EXTI2_3_IRQHandler(){
-	
+	static portBASE_TYPE xTaskWoken = pdFALSE;
+	/*start measuring the phase shift for phase B and stop for measuring phase C */
+
 	EXTI->PR |= EXTI_PR_PR2;
 	EXTI->PR |= EXTI_PR_PR3;
-
+	
+	if(xTaskWoken == pdTRUE){
+		taskYIELD();
+	}
 }
 
 /*EXTI line 4 and 5 interrupt handler*/
 void EXTI4_15_IRQHandler(){
+	static portBASE_TYPE xTaskWoken = pdFALSE;
+	/*start measuring the phase shift for phase C and stop for measuring phase A */
 
 	EXTI->PR |= EXTI_PR_PR4;
 	EXTI->PR |= EXTI_PR_PR5;
-
+	
+	if(xTaskWoken == pdTRUE){
+		taskYIELD();
+	}
 }
 

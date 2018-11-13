@@ -3,6 +3,7 @@
 
 #include "stm32f0xx.h"
 #include "motor_protection.h"
+#include "user_tasks.h"
 
 /*-------------------------------------------*/
 extern void EXTI_Init(void);

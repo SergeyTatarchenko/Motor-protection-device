@@ -28,6 +28,7 @@ uint32_t TIM15_CCR1_Array[2];
 uint32_t TIM16_CCR1_Array[2];
 uint32_t TIM17_CCR1_Array[2];
 
+int TimerWatchDog = 10;
 
 /*convert integer to array*/
 uint32_t itoa(int i,uint8_t *buff,uint8_t MesSize){

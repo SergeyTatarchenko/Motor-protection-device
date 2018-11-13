@@ -2,9 +2,19 @@
 #define MOTOR_PROTECTION_H
 
 #include "stm32f0xx.h"
+#include "stm32f0xx_tim.h"
 
 #define DEFAULT_VOLTAGE_BUF_SIZE	3
 #define DEFAULT_PERIOD_BUF_SIZE		3
+
+#define PHASEMETER_A_START   TIMER_6_START   
+#define PHASEMETER_B_START   TIMER_7_START   
+#define PHASEMETER_C_START   TIMER_14_START  
+
+#define PHASEMETER_A_STOP    TIMER_6_STOP    
+#define PHASEMETER_B_STOP    TIMER_7_STOP    
+#define PHASEMETER_C_STOP    TIMER_14_STOP   
+
 
 #pragma pack(push,1)
 typedef struct{
@@ -85,7 +95,7 @@ extern uint32_t TIM15_CCR1_Array[2];
 extern uint32_t TIM16_CCR1_Array[2];
 extern uint32_t TIM17_CCR1_Array[2];
 
-
+extern int TimerWatchDog;
 /*-------------------------------------------*/
 extern uint32_t itoa(int i,uint8_t *buff, uint8_t MesSize);
 #endif
