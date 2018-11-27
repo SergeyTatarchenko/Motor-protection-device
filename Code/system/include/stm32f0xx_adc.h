@@ -7,7 +7,7 @@
 #define ADC_off	(ADC1->CR |= ADC_CR_ADSTP)
 
 #define ADC_Ref     2960    /* mV*/
-#define ADC_Depth   4096-1    /*12 bit adc*/
+#define ADC_Depth   4096-1  /*12 bit adc*/
 
 extern void     ADC_Init(void);
 extern int 		ADC_CalcValue(uint32_t data);

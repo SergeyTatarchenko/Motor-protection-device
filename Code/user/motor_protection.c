@@ -30,6 +30,24 @@ uint32_t TIM17_CCR1_Array[2];
 
 int TimerWatchDog = 10;
 
+/*enable interrupt on phasemeter*/
+extern void EnableMetering(void){
+	
+	NVIC_EnableIRQ(EXTI0_1_IRQn);
+	NVIC_EnableIRQ(EXTI2_3_IRQn);
+	NVIC_EnableIRQ(EXTI4_15_IRQn);
+
+}
+
+/*disable interrupt on phasemeter*/
+extern void DisableMetering(void){
+	
+	NVIC_DisableIRQ(EXTI0_1_IRQn);
+	NVIC_DisableIRQ(EXTI2_3_IRQn);
+	NVIC_DisableIRQ(EXTI4_15_IRQn);
+	
+}
+ 
 /*convert integer to array*/
 uint32_t itoa(int i,uint8_t *buff,uint8_t MesSize){
 	int temp = i;

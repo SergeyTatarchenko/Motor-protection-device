@@ -41,6 +41,10 @@ void vSysInit(void *pvParameters){
 	
 	PowerFactorPointer = &PowerFactor;
 	
+	/*init LCD1602*/
+	Init_LCD_1602();
+	/*write initial text */
+	LCD_WriteText();
 	
 	/*adc start*/
 	ADC_on;
@@ -49,21 +53,19 @@ void vSysInit(void *pvParameters){
 	EXTI_Init();
 	NVIC_Init();
 	/************/
+		
+	xTaskCreate(vADC_Conversion,"ADC convertion", configMINIMAL_STACK_SIZE, NULL, 2 , NULL );
+	xTaskCreate(vTIM_PeriodConversion,"TIM conversion", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	
-	
-	/*init LCD1602*/
-	Init_LCD_1602();
-	/*write initial text */
-	LCD_WriteText();
-	
-	xTaskCreate(vADC_Conversion,"ADC convertion", configMINIMAL_STACK_SIZE, NULL, 4 , NULL );
-	xTaskCreate(vTIM_PeriodConversion,"TIM conversion", configMINIMAL_STACK_SIZE, NULL, 4, NULL );
-	xTaskCreate(vI2CTransfer, 	"I2C Transmit", configMINIMAL_STACK_SIZE, NULL, 5, NULL );
+	xTaskCreate(vI2CTransfer,"I2C Transmit", configMINIMAL_STACK_SIZE, NULL, 3, NULL );
 	
 	/*delete task*/
 	vTaskDelete(NULL);
 }
+/*check state routine */
+void vCheckState(void *pvParameters){
 
+}
 /*transmit current data to lcd*/	
 void vI2CTransfer(void *pvParameters){
 	uint8_t counter;
@@ -85,7 +87,7 @@ void vI2CTransfer(void *pvParameters){
 				/*phase C*/
 				LCD_SendChar(VoltageTextLCDPointer->PhaseC_VoltageArray[counter]+0x30);
 			}
-				
+			/*frequency tramsmit*/	
 			LCD_SetDRAM_Adress(0x42);
 			for(counter = 0 ; counter < DEFAULT_PERIOD_BUF_SIZE; counter++){
 				/*phase A */
@@ -120,7 +122,7 @@ void vADC_Conversion(void *pvParameters){
 		itoa(CapturedVoltagePointer->PhaseB_Voltage,VoltageTextLCDPointer->PhaseB_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
 		itoa(CapturedVoltagePointer->PhaseC_Voltage,VoltageTextLCDPointer->PhaseC_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
 		
-		vTaskDelay(100);
+		vTaskDelay(500);
 	}
 }
 

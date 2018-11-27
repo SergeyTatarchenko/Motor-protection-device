@@ -23,15 +23,8 @@ void EXTI_Init(){
 	EXTI->RTSR |=(EXTI_RTSR_TR0|EXTI_RTSR_TR1|EXTI_RTSR_TR2|EXTI_RTSR_TR3|EXTI_RTSR_TR4|EXTI_RTSR_TR5);
 }
 
-void NVIC_Init(){
-	
-	/*enable external interrupt on NVIC*/
-	NVIC_EnableIRQ (EXTI0_1_IRQn);
-	NVIC_EnableIRQ (EXTI2_3_IRQn);
-	NVIC_EnableIRQ (EXTI4_15_IRQn);
-	
-	//NVIC_SetPriority (EXTI9_5_IRQn, 2);
-	
+void NVIC_Init(){	
+	//NVIC_SetPriority (EXTI0_1_IRQn, 4);
 	/*enable global interrupt*/
 	__enable_irq ();
 }
@@ -41,6 +34,10 @@ void EXTI0_1_IRQHandler(){
 	
 	static portBASE_TYPE xTaskWoken = pdFALSE;
 	/*start measuring the phase shift for phase A and stop for measuring phase B */
+	
+	/*start timer for fhase A shift*/
+	PHASEMETER_A_START;
+	
 	
 	EXTI->PR |= EXTI_PR_PR0;
 	EXTI->PR |= EXTI_PR_PR1;
