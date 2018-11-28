@@ -44,9 +44,6 @@ void vSysInit(void *pvParameters){
 	/*init LCD1602*/
 	Init_LCD_1602();
 	
-	/*write initial text */
-	//LCD_WorkspaceDrawing();
-	
 	/*adc start*/
 	ADC_on;
 
@@ -84,6 +81,10 @@ void vInitialStateCheck(void *pvParameters){
 	
 	LCD_DrawWorkspace();
 	xTaskCreate(vI2CTransfer,"I2C Transmit", configMINIMAL_STACK_SIZE, NULL, 3, NULL );
+	/*enable phase shift counter*/
+	EnableMetering();
+	
+	
 	
 	/*delete task*/
 	vTaskDelete(NULL);

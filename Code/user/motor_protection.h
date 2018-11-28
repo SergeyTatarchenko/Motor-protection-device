@@ -6,6 +6,8 @@
 
 #define DEFAULT_VOLTAGE_BUF_SIZE	3
 #define DEFAULT_PERIOD_BUF_SIZE		3
+#define DEFAULT_PERIOD_BUF_SIZE		3
+
 
 #define PHASEMETER_A_START   TIMER_6_START   
 #define PHASEMETER_B_START   TIMER_7_START   
@@ -42,6 +44,9 @@ typedef struct{
     uint32_t PhaseA_Period;
     uint32_t PhaseB_Period;
     uint32_t PhaseC_Period;
+    uint32_t PhaseA_Frequency;
+    uint32_t PhaseB_Frequency;
+    uint32_t PhaseC_Frequency;
 
 }CapturedPeriod_REGISTR;
 #pragma pack(pop)
@@ -67,6 +72,16 @@ typedef struct{
 }PowerFactor_REGISTR;
 #pragma pack(pop)
 
+#pragma pack(push,1)
+typedef struct{
+
+    uint16_t MinPhaseVoltage;
+    uint16_t MaxPhaseVoltage;
+    uint16_t frequency;
+
+
+}MotorConfiguration_REGISTR;
+#pragma pack(pop)
 
 
 
@@ -105,5 +120,6 @@ extern int TimerWatchDog;
 extern void EnableMetering(void);
 extern void DisableMetering(void);
 extern uint32_t itoa(int i,uint8_t *buff, uint8_t MesSize);
+extern uint_least8_t CheckPowerNetwork(void);
 #endif
 
