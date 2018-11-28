@@ -21,10 +21,9 @@ void vTIM_PeriodConversion(void *pvParameters);
 
 /*3 level peiority*/
 void vI2CTransfer(void *pvParameters);
-void vCheckState(void *pvParameters);
+void vInitialStateCheck(void *pvParameters);
 
 /*4 level peiority*/
 void vSysInit(void *pvParameters);
-
 
 #endif

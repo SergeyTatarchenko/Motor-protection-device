@@ -67,6 +67,9 @@ typedef struct{
 }PowerFactor_REGISTR;
 #pragma pack(pop)
 
+
+
+
 /*captured voltage from ADC with DMA*/ 
 extern CapturedVoltage_REGISTR CapturedVoltage;
 extern CapturedVoltage_REGISTR *CapturedVoltagePointer;
@@ -97,6 +100,8 @@ extern uint32_t TIM17_CCR1_Array[2];
 
 extern int TimerWatchDog;
 /*-------------------------------------------*/
+
+
 extern void EnableMetering(void);
 extern void DisableMetering(void);
 extern uint32_t itoa(int i,uint8_t *buff, uint8_t MesSize);
