@@ -11,6 +11,8 @@ static uint8_t command_7[]={CMD7};
 static uint8_t command_8[]={CMD8};
 static uint8_t command_9[]={CMD9};
 
+uint8_t CharArray[4];
+
 /*ASCII code chart*/
 static uint8_t _A_[]={LETTER_A};
 static uint8_t _B_[]={LETTER_B};
@@ -49,12 +51,12 @@ uint_least8_t Init_LCD_1602(void){
 	return state;
 }
 
-uint_least8_t LCD_Reset(void){
+uint_least8_t LCD_Reset(){
 	uint_least8_t state;
 	
 	return state;
 }
-uint_least8_t LCD_ClearDisplay(void){
+uint_least8_t LCD_ClearDisplay(){
 	
 	uint_least8_t state;
 	
@@ -131,7 +133,25 @@ uint_least8_t LCD_DrawWorkspace(){
 	state =  I2CSendData(PCF8574_ADRESS,_C_,sizeof(_C_));
 	DELAY(3);
 	return state;
-
+	
+	/*testing */
+	LCD_SetDRAM_Adress(0x01);
+	LCD_SendChar('A');
+	LCD_SendChar('=');
+	LCD_SetDRAM_Adress(0x06);
+	LCD_SendChar('v');
+	LCD_SetDRAM_Adress(0x08);
+	LCD_SendChar('T');
+	LCD_SendChar('=');
+	LCD_SetDRAM_Adress(0x0D);
+	LCD_SendChar('H');
+	LCD_SendChar('z');
+	LCD_SetDRAM_Adress(0x41);
+	LCD_SendChar('c');
+	LCD_SendChar('o');
+	LCD_SendChar('s');
+	LCD_SendChar('f');
+	LCD_SendChar('=');
 }
 
 uint_least8_t LCD_DrawBootWindow(){

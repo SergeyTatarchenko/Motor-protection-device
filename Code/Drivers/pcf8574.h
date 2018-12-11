@@ -40,6 +40,9 @@
 #define CHAR_TCH    0x2D,0x29,0xED,0xE9     /*.*/
 #define CHAR_PRB    0x2D,0x29,0x0D,0x09     /* */
 
+/*global variables*/
+extern uint8_t CharArray[4];
+
 /*service functions*/
 extern uint_least8_t Init_LCD_1602(void);
 extern uint_least8_t LCD_Reset(void);

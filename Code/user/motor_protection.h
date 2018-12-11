@@ -4,9 +4,9 @@
 #include "stm32f0xx.h"
 #include "stm32f0xx_tim.h"
 
-#define DEFAULT_VOLTAGE_BUF_SIZE	3
-#define DEFAULT_PERIOD_BUF_SIZE		3
-#define DEFAULT_PERIOD_BUF_SIZE		3
+#define DEFAULT_VOLTAGE_BUF_SIZE	        3
+#define DEFAULT_PERIOD_BUF_SIZE		        3
+#define DEFAULT_POWER_FACTOR_BUF_SIZE		3
 
 
 #define PHASEMETER_A_START   TIMER_6_START   
@@ -17,6 +17,8 @@
 #define PHASEMETER_B_STOP    TIMER_7_STOP    
 #define PHASEMETER_C_STOP    TIMER_14_STOP   
 
+#define TIMER_MS    1000
+#define TIMER_US    1000000UL
 
 #pragma pack(push,1)
 typedef struct{
@@ -25,7 +27,7 @@ typedef struct{
     uint32_t PhaseB_Voltage;
     uint32_t PhaseC_Voltage;
 
-}CapturedVoltage_REGISTR;
+} CapturedVoltage_REGISTR;
 #pragma pack(pop)
 
 #pragma pack(push,1)
@@ -35,7 +37,7 @@ typedef struct{
     uint8_t PhaseB_VoltageArray[DEFAULT_VOLTAGE_BUF_SIZE];
     uint8_t PhaseC_VoltageArray[DEFAULT_VOLTAGE_BUF_SIZE];
 
-}VoltageTextLCD_REGISTR;
+} VoltageTextLCD_REGISTR;
 #pragma pack(pop)
 
 #pragma pack(push,1)
@@ -44,11 +46,12 @@ typedef struct{
     uint32_t PhaseA_Period;
     uint32_t PhaseB_Period;
     uint32_t PhaseC_Period;
+   
     uint32_t PhaseA_Frequency;
     uint32_t PhaseB_Frequency;
     uint32_t PhaseC_Frequency;
 
-}CapturedPeriod_REGISTR;
+} CapturedPeriod_REGISTR;
 #pragma pack(pop)
 
 #pragma pack(push,1)
@@ -57,8 +60,12 @@ typedef struct{
     uint8_t PhaseA_PeriodArray[DEFAULT_PERIOD_BUF_SIZE];
     uint8_t PhaseB_PeriodArray[DEFAULT_PERIOD_BUF_SIZE];
     uint8_t PhaseC_PeriodArray[DEFAULT_PERIOD_BUF_SIZE];
-
-}PeriodLCD_REGISTR;
+   
+    uint8_t PhaseA_FrequencyArray[DEFAULT_PERIOD_BUF_SIZE];
+    uint8_t PhaseB_FrequencyArray[DEFAULT_PERIOD_BUF_SIZE];
+    uint8_t PhaseC_FrequencyArray[DEFAULT_PERIOD_BUF_SIZE];
+    
+} PeriodLCD_REGISTR;
 #pragma pack(pop)
 
 
@@ -69,8 +76,19 @@ typedef struct{
 	uint16_t PhaseB_Factor;
 	uint16_t PhaseC_Factor;
 	
-}PowerFactor_REGISTR;
+} PowerFactor_REGISTR;
 #pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct{
+	
+	uint16_t PhaseA_FactorArray[DEFAULT_POWER_FACTOR_BUF_SIZE];
+	uint16_t PhaseB_FactorArray[DEFAULT_POWER_FACTOR_BUF_SIZE];
+	uint16_t PhaseC_FactorArray[DEFAULT_POWER_FACTOR_BUF_SIZE];
+	
+}PowerFactorLCD_REGISTR;
+#pragma pack(pop)
+
 
 #pragma pack(push,1)
 typedef struct{
@@ -104,6 +122,10 @@ extern PeriodLCD_REGISTR *PeriodLCDPointer;
 /* captured power factor value in mcs */
 extern PowerFactor_REGISTR PowerFactor;
 extern PowerFactor_REGISTR *PowerFactorPointer;
+
+/* transmited power factor value in ASCII text  */
+extern PowerFactorLCD_REGISTR PowerFactorLCD;
+extern PowerFactorLCD_REGISTR *PowerFactorLCDPointer;
 
 /*ADC data from DMA transfer*/
 extern uint32_t CapturedVoltageArray[3];

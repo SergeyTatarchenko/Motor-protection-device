@@ -14,7 +14,11 @@
 #include "stm32f0xx_tim.h"
 #include "pcf8574.h"
 #include "motor_protection.h"
-
+/*----------------------*/
+#define PHASE_A  1
+#define PHASE_B  2
+#define PHASE_C  3
+/*----------------------*/
 /*2 level peiority*/
 void vADC_Conversion(void *pvParameters);
 void vTIM_PeriodConversion(void *pvParameters);

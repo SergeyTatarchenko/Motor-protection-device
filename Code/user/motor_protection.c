@@ -20,6 +20,10 @@ PeriodLCD_REGISTR *PeriodLCDPointer;
 PowerFactor_REGISTR PowerFactor;
 PowerFactor_REGISTR *PowerFactorPointer;
 
+/* transmited power factor value in ASCII text  */
+PowerFactorLCD_REGISTR PowerFactorLCD;
+PowerFactorLCD_REGISTR *PowerFactorLCDPointer;
+
 /*ADC data from DMA transfer*/
 uint32_t CapturedVoltageArray[3];
 
