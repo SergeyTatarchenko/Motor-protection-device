@@ -35,12 +35,23 @@ void EXTI0_1_IRQHandler(){
 	static portBASE_TYPE xTaskWoken = pdFALSE;
 	/*start measuring the phase shift for phase A and stop for measuring phase B */
 	
-	/*start timer for fhase A shift*/
-	PHASEMETER_A_START;
-	
-	
-	EXTI->PR |= EXTI_PR_PR0;
-	EXTI->PR |= EXTI_PR_PR1;
+	/*interrupt on PC0 */
+	if(EXTI->PR & EXTI_PR_PR0){
+		
+		/*start timer for fhase A shift*/
+		PHASEMETER_A_START;
+		
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR0;
+	}
+
+	/*interrupt on PC1 */
+	if(EXTI->PR & EXTI_PR_PR1){
+
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR1;
+	}
+		
 	
 	if(xTaskWoken == pdTRUE){
 		taskYIELD();
@@ -52,9 +63,20 @@ void  EXTI2_3_IRQHandler(){
 	static portBASE_TYPE xTaskWoken = pdFALSE;
 	/*start measuring the phase shift for phase B and stop for measuring phase C */
 
-	EXTI->PR |= EXTI_PR_PR2;
-	EXTI->PR |= EXTI_PR_PR3;
-	
+	/*interrupt on PC2 */
+	if(EXTI->PR & EXTI_PR_PR2){
+				
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR2;
+	}
+
+	/*interrupt on PC3 */
+	if(EXTI->PR & EXTI_PR_PR3){
+		
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR3;
+	}
+			
 	if(xTaskWoken == pdTRUE){
 		taskYIELD();
 	}
@@ -62,12 +84,34 @@ void  EXTI2_3_IRQHandler(){
 
 /*EXTI line 4 and 5 interrupt handler*/
 void EXTI4_15_IRQHandler(){
+	
 	static portBASE_TYPE xTaskWoken = pdFALSE;
 	/*start measuring the phase shift for phase C and stop for measuring phase A */
 
-	EXTI->PR |= EXTI_PR_PR4;
-	EXTI->PR |= EXTI_PR_PR5;
-	
+	/*interrupt on PC4 */
+	if(EXTI->PR & EXTI_PR_PR4){
+
+		/*stop timer for fhase A shift*/
+		PHASEMETER_A_STOP;
+		
+		if(PHASEMETER_A_VALUE > 0){
+			/*get value from timer in us*/
+			PowerFactorPointer->PhaseA_Factor = PHASEMETER_A_VALUE;
+			/*clear buffer*/
+			PHASEMETER_A_VALUE = 0;	
+		}
+
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR4;
+	}
+
+	/*interrupt on PC5 */
+	if(EXTI->PR & EXTI_PR_PR5){
+		
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR5;
+	}
+
 	if(xTaskWoken == pdTRUE){
 		taskYIELD();
 	}

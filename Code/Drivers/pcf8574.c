@@ -96,15 +96,9 @@ uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress){
 void LCD_SendChar(uint8_t CharToSend){
 	uint8_t temp;
 	/*vatiable for transmit */
-	uint8_t VoltageBuf[4];
+	uint8_t VoltageBuf[4] = {0x0D,0x09,0x0D,0x09};
 	temp = CharToSend;
-	
-	/*clear buffer*/
-	VoltageBuf[0] = 0x0D;
-	VoltageBuf[1] = 0x09;
-	VoltageBuf[2] = 0x0D;
-	VoltageBuf[3] = 0x09;
-	
+		
 	/*high part of byte*/
 	temp &= 0xF0;
 	VoltageBuf[0] |= temp;
@@ -117,7 +111,7 @@ void LCD_SendChar(uint8_t CharToSend){
 	VoltageBuf[3] |= temp<<4;
 
 	I2CSendData(PCF8574_ADRESS,VoltageBuf,sizeof(VoltageBuf));
-	vTaskDelay(2);
+	DELAY(2);
 }
 
 uint_least8_t LCD_DrawWorkspace(){
@@ -174,4 +168,10 @@ uint_least8_t LCD_DrawBootWindow(){
 	DELAY(3);
 	return state;
 	
+	/*testing */
+	LCD_SetDRAM_Adress(0x05);
+	LCD_SendChar('B');
+	LCD_SendChar('O');
+	LCD_SendChar('O');
+	LCD_SendChar('T');
 }

@@ -39,7 +39,7 @@ void vSysInit(void *pvParameters){
 	VoltageTextLCDPointer =& VoltageTextLCD;
 	
 	CapturedPeriodPointer =&  CapturedPeriod;
-	PeriodLCDPointer = &PeriodLCD;
+	PeriodLCDPointer = & PeriodLCD;
 	
 	PowerFactorPointer = &PowerFactor;
 	
@@ -89,9 +89,7 @@ void vInitialStateCheck(void *pvParameters){
 	
 	/*enable phase shift counter*/
 	//EnableMetering();
-	
-	
-	
+		
 	/*delete task*/
 	vTaskDelete(NULL);
 }
