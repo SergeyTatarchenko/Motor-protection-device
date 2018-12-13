@@ -69,9 +69,10 @@ void GeneralTimerConfig(){
 	/*CCP enable*/
   	TIM17->CCER |= TIM_CCER_CC1E; 
 	
-	/*TIM6/7/14 used to implement a phase meter*/
+	
+	/*TIM3/6/14 used to implement a phase meter*/
+	TIM3->PSC = TIMER_PSC;
 	TIM6->PSC = TIMER_PSC;
-	TIM7->PSC = TIMER_PSC;
 	TIM14->PSC= TIMER_PSC;
 	
 }
