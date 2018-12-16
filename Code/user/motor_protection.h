@@ -4,9 +4,9 @@
 #include "stm32f0xx.h"
 #include "stm32f0xx_tim.h"
 
-#define DEFAULT_VOLTAGE_BUF_SIZE	        3
-#define DEFAULT_PERIOD_BUF_SIZE		        3
-#define DEFAULT_POWER_FACTOR_BUF_SIZE		3
+#define DEFAULT_VOLTAGE_BUF_SIZE            3
+#define DEFAULT_PERIOD_BUF_SIZE             3
+#define DEFAULT_POWER_FACTOR_BUF_SIZE       4
 
 #define PHASEMETER_A_VALUE  TIM3->CCR1
 #define PHASEMETER_B_VALUE  TIM6->CCR1
@@ -86,9 +86,9 @@ typedef struct{
 #pragma pack(push,1)
 typedef struct{
 	
-	uint16_t PhaseA_FactorArray[DEFAULT_POWER_FACTOR_BUF_SIZE];
-	uint16_t PhaseB_FactorArray[DEFAULT_POWER_FACTOR_BUF_SIZE];
-	uint16_t PhaseC_FactorArray[DEFAULT_POWER_FACTOR_BUF_SIZE];
+	uint8_t PhaseA_FactorArray[DEFAULT_POWER_FACTOR_BUF_SIZE];
+	uint8_t PhaseB_FactorArray[DEFAULT_POWER_FACTOR_BUF_SIZE];
+	uint8_t PhaseC_FactorArray[DEFAULT_POWER_FACTOR_BUF_SIZE];
 	
 }PowerFactorLCD_REGISTR;
 #pragma pack(pop)

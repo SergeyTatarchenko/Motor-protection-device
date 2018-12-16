@@ -26,23 +26,6 @@
 #define CMD8    0x14,0x10,0x44,0x40     /*cursor moving right*/
 #define CMD9    0x8C,0x88,0x0C,0x08     /*display led on, set DRAM adress 0x00*/
 
-#define LETTER_A    0x4D,0x49,0x1D,0x19     /*A*/
-#define LETTER_B    0x4D,0x49,0x2D,0x29     /*B*/
-#define LETTER_C    0x4D,0x49,0x3D,0x39     /*C*/
-#define LETTER_L    0x4D,0x49,0xCD,0xC9     /*L*/
-#define LETTER_O    0x4D,0x49,0xFD,0xF9     /*O*/
-#define LETTER_D    0x4D,0x49,0x4D,0x49     /*D*/
-#define LETTER_I    0x4D,0x49,0x9D,0x99     /*I*/
-#define LETTER_N    0x4D,0x49,0xED,0xE9     /*N*/
-#define LETTER_G    0x4D,0x49,0x7D,0x79     /*G*/
-
-
-#define CHAR_TCH    0x2D,0x29,0xED,0xE9     /*.*/
-#define CHAR_PRB    0x2D,0x29,0x0D,0x09     /* */
-
-/*global variables*/
-extern uint8_t CharArray[4];
-
 /*service functions*/
 extern uint_least8_t Init_LCD_1602(void);
 extern uint_least8_t LCD_Reset(void);
@@ -51,7 +34,7 @@ extern void LCD_SendChar(uint8_t CharToSend);
 extern uint_least8_t LCD_ClearDisplay(void);
 
 /*user functions*/
-extern uint_least8_t LCD_DrawWorkspace(void);
-extern uint_least8_t LCD_DrawBootWindow(void);
+extern void LCD_DrawWorkspace(void);
+extern void LCD_DrawBootWindow(void);
 
 #endif
