@@ -4,23 +4,29 @@ void EXTI_Init(){
 	
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGCOMPEN;
 	
-	/*PC0..PC5 as input with pull down, high speed*/
+	/*PC1..PC6 as input with pull down, high speed*/
 	
-	GPIOC->MODER &= ~(GPIO_MODER_MODER0|GPIO_MODER_MODER1|GPIO_MODER_MODER2|
-					  GPIO_MODER_MODER3|GPIO_MODER_MODER4|GPIO_MODER_MODER5);
+	GPIOC->MODER &= ~(GPIO_MODER_MODER1|GPIO_MODER_MODER2|GPIO_MODER_MODER3|
+					  GPIO_MODER_MODER4|GPIO_MODER_MODER5|GPIO_MODER_MODER6);
 	
-	GPIOC->PUPDR |=(GPIO_PUPDR_PUPDR0_1|GPIO_PUPDR_PUPDR1_1|GPIO_PUPDR_PUPDR2_1|
-					GPIO_PUPDR_PUPDR3_1|GPIO_PUPDR_PUPDR4_1|GPIO_PUPDR_PUPDR5_1);
+	GPIOC->PUPDR |=(GPIO_PUPDR_PUPDR1_1|GPIO_PUPDR_PUPDR2_1|GPIO_PUPDR_PUPDR3_1|
+					GPIO_PUPDR_PUPDR4_1|GPIO_PUPDR_PUPDR5_1|GPIO_PUPDR_PUPDR6_1);
 	
-	GPIOC->OSPEEDR |=(GPIO_OSPEEDER_OSPEEDR0|GPIO_OSPEEDER_OSPEEDR1|GPIO_OSPEEDER_OSPEEDR2|
-					  GPIO_OSPEEDER_OSPEEDR3|GPIO_OSPEEDER_OSPEEDR4|GPIO_OSPEEDER_OSPEEDR5);
+	GPIOC->OSPEEDR |=(GPIO_OSPEEDER_OSPEEDR1|GPIO_OSPEEDER_OSPEEDR2|GPIO_OSPEEDER_OSPEEDR3|
+					  GPIO_OSPEEDER_OSPEEDR4|GPIO_OSPEEDER_OSPEEDR5|GPIO_OSPEEDER_OSPEEDR6);
 	
-	/*EXTI config, connect to GPIOC*/
-	SYSCFG->EXTICR[0] |= (SYSCFG_EXTICR1_EXTI0_PC|SYSCFG_EXTICR1_EXTI1_PC|SYSCFG_EXTICR1_EXTI2_PC|SYSCFG_EXTICR1_EXTI3_PC);
-	SYSCFG->EXTICR[1] |=(SYSCFG_EXTICR2_EXTI4_PC|SYSCFG_EXTICR2_EXTI5_PC);
+	/*EXTI config, connect EXTI1-6 to GPIOC*/
+	SYSCFG->EXTICR[0] |= (SYSCFG_EXTICR1_EXTI1_PC|SYSCFG_EXTICR1_EXTI2_PC|SYSCFG_EXTICR1_EXTI3_PC);
+	SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI4_PC|SYSCFG_EXTICR2_EXTI5_PC|SYSCFG_EXTICR2_EXTI6_PC);
 	
-	/*rising edge interrupt on PC0..PC5*/
-	EXTI->RTSR |=(EXTI_RTSR_TR0|EXTI_RTSR_TR1|EXTI_RTSR_TR2|EXTI_RTSR_TR3|EXTI_RTSR_TR4|EXTI_RTSR_TR5);
+	/*rising edge interrupt on PC1..PC6*/
+	EXTI->RTSR |=(EXTI_RTSR_TR1|EXTI_RTSR_TR2|EXTI_RTSR_TR3|EXTI_RTSR_TR4|EXTI_RTSR_TR5|EXTI_RTSR_TR6);
+
+	/*EXTI config, connect EXTI0 to GPIOA, user button*/
+	SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI0_PA;
+	/*rising edge interrupt on PA0*/
+	EXTI->RTSR |=EXTI_RTSR_TR0;
+
 }
 
 void NVIC_Init(){	
@@ -33,20 +39,27 @@ void NVIC_Init(){
 void EXTI0_1_IRQHandler(){
 	
 	static portBASE_TYPE xTaskWoken = pdFALSE;
-	/*start measuring the phase shift for phase A and stop for measuring phase B */
 	
-	/*interrupt on PC0 */
+	/*interrupt on PA0 */
 	if(EXTI->PR & EXTI_PR_PR0){
 		
-		/*start timer for fhase A shift*/
-		PHASEMETER_A_START;
-		
+		/*switch display image */
+		if(ContentSwitching < 3){
+			ContentSwitching++;
+		}else{
+			ContentSwitching = 1;
+		}
 		/*reset interrupt trigger*/
 		EXTI->PR |= EXTI_PR_PR0;
 	}
-
+	
+	/*start measuring the phase shift for phase A and stop for measuring phase B */
+	
 	/*interrupt on PC1 */
 	if(EXTI->PR & EXTI_PR_PR1){
+				
+		/*start timer for fhase A shift*/
+		//PHASEMETER_A_START;
 
 		/*reset interrupt trigger*/
 		EXTI->PR |= EXTI_PR_PR1;

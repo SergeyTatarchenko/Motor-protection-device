@@ -19,6 +19,8 @@
 #define PHASE_B  2
 #define PHASE_C  3
 /*----------------------*/
+extern uint32_t ContentSwitching;
+/*----------------------*/
 /*2 level peiority*/
 void vADC_Conversion(void *pvParameters);
 void vTIM_PeriodConversion(void *pvParameters);
@@ -27,7 +29,6 @@ void vTIM_PeriodConversion(void *pvParameters);
 void vI2CTransfer(void *pvParameters);
 void vInitialStateCheck(void *pvParameters);
 
-void vTestingTask(void *pvParameters);
 /*4 level peiority*/
 void vSysInit(void *pvParameters);
 
