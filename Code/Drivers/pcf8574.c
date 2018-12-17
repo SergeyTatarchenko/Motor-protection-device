@@ -101,9 +101,8 @@ void LCD_SendChar(uint8_t CharToSend){
 }
 
 void LCD_DrawWorkspace(){
-		
-	LCD_SetDRAM_Adress(0x01);
-	LCD_SendChar('A');
+	
+	LCD_SetDRAM_Adress(0x02);
 	LCD_SendChar('=');
 	LCD_SetDRAM_Adress(0x06);
 	LCD_SendChar('v');

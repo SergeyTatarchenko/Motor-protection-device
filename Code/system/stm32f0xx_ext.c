@@ -9,6 +9,12 @@ void EXTI_Init(){
 	GPIOC->MODER &= ~(GPIO_MODER_MODER1|GPIO_MODER_MODER2|GPIO_MODER_MODER3|
 					  GPIO_MODER_MODER4|GPIO_MODER_MODER5|GPIO_MODER_MODER6);
 	
+	/*PA0 is input with pull down, high speed*/
+	GPIOA->MODER &= ~GPIO_MODER_MODER0;
+	GPIOA->PUPDR |= GPIO_PUPDR_PUPDR0_1;
+	GPIOA->OSPEEDR|= GPIO_OSPEEDER_OSPEEDR0;
+	
+	
 	GPIOC->PUPDR |=(GPIO_PUPDR_PUPDR1_1|GPIO_PUPDR_PUPDR2_1|GPIO_PUPDR_PUPDR3_1|
 					GPIO_PUPDR_PUPDR4_1|GPIO_PUPDR_PUPDR5_1|GPIO_PUPDR_PUPDR6_1);
 	
@@ -26,6 +32,10 @@ void EXTI_Init(){
 	SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI0_PA;
 	/*rising edge interrupt on PA0*/
 	EXTI->RTSR |=EXTI_RTSR_TR0;
+	
+	
+	/*interrupt mask*/
+	EXTI->IMR |=(EXTI_IMR_MR0);
 
 }
 
@@ -40,7 +50,7 @@ void EXTI0_1_IRQHandler(){
 	
 	static portBASE_TYPE xTaskWoken = pdFALSE;
 	
-	/*interrupt on PA0 */
+	/*interrupt on PA0, user button */
 	if(EXTI->PR & EXTI_PR_PR0){
 		
 		/*switch display image */
@@ -49,6 +59,7 @@ void EXTI0_1_IRQHandler(){
 		}else{
 			ContentSwitching = 1;
 		}
+		
 		/*reset interrupt trigger*/
 		EXTI->PR |= EXTI_PR_PR0;
 	}

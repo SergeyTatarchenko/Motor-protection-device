@@ -14,7 +14,6 @@ void vSysInit(void *pvParameters){
 	RCC->AHBENR  |= RCC_AHBENR_GPIOCEN;
 	GPIOC->MODER |= GPIO_MODER_MODER9_0;
 	GPIOC->MODER |= GPIO_MODER_MODER8_0;
-	GPIOC->BSRR  |= GPIO_BSRR_BS_9;
 	
 	/*init I2C1*/
 	I2CInit();
@@ -102,6 +101,8 @@ void vI2CTransfer(void *pvParameters){
 		switch(ContentSwitching){
 			
 			case PHASE_A:
+					LCD_SetDRAM_Adress(0x01);
+					LCD_SendChar('A');
 				/*voltage data*/
 				LCD_SetDRAM_Adress(DDRAM_adress_row_0+3);
 				for(counter = 0 ; counter < DEFAULT_VOLTAGE_BUF_SIZE; counter++){
@@ -124,6 +125,8 @@ void vI2CTransfer(void *pvParameters){
 			break;
 
 			case PHASE_B:
+				LCD_SetDRAM_Adress(0x01);
+				LCD_SendChar('B');
 				/*voltage data*/
 				LCD_SetDRAM_Adress(DDRAM_adress_row_0+3);
 				for(counter = 0 ; counter < DEFAULT_VOLTAGE_BUF_SIZE; counter++){
@@ -146,6 +149,8 @@ void vI2CTransfer(void *pvParameters){
 			break;
 
 			case PHASE_C:
+				LCD_SetDRAM_Adress(0x01);
+				LCD_SendChar('C');
 				/*voltage data*/
 				LCD_SetDRAM_Adress(DDRAM_adress_row_0+3);
 				for(counter = 0 ; counter < DEFAULT_VOLTAGE_BUF_SIZE; counter++){
