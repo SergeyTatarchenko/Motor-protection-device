@@ -24,6 +24,7 @@ extern uint32_t ContentSwitching;
 /*2 level peiority*/
 void vADC_Conversion(void *pvParameters);
 void vTIM_PeriodConversion(void *pvParameters);
+void vPowerFactorConversion(void *pvParameters);
 
 /*3 level peiority*/
 void vI2CTransfer(void *pvParameters);

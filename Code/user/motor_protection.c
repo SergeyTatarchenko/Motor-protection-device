@@ -63,6 +63,18 @@ uint_least8_t CheckPowerNetwork(void){
 	return status;
  }
 
+/*calculate power factor, return result in deg */
+uint16_t CalcPowerFactor(uint16_t shift, uint32_t period){
+
+	uint16_t cosine;
+	if((period>0) && (shift>0)){
+		cosine = ((uint32_t)shift*180)/((uint32_t)period);	
+	}else{
+		cosine = 0;
+	}
+	return cosine;
+
+}
 
 /*convert integer to array*/
 uint32_t itoa(int i,uint8_t *buff,uint8_t MesSize){

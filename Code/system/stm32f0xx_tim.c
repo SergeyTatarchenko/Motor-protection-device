@@ -28,7 +28,7 @@ void GeneralTimerConfig(){
 	
 	/******** TIM15 config*********/
 	/*Get 1KHz timer*/
-	TIM15->PSC = TIMER_PSC;
+	TIM15->PSC = TIMER_PSC_1;
 	/*select TI1 for TIM15_CH1*/
 	TIM15->CCMR1 |= TIM_CCMR1_CC1S_0;
 	/*dont use psc and filter */
@@ -42,7 +42,7 @@ void GeneralTimerConfig(){
 
 	/******** TIM16 config*********/
   	/*Get 1KHz timer*/
-	TIM16->PSC = TIMER_PSC;
+	TIM16->PSC = TIMER_PSC_1;
 	/*select TI1 for TIM15_CH1*/
 	TIM16->CCMR1 |= TIM_CCMR1_CC1S_0;
 	/*dont use psc and filter */
@@ -57,7 +57,7 @@ void GeneralTimerConfig(){
   	/******** TIM17 config*********/
   	
   	/*Get 1KHz timer*/
-	TIM17->PSC = TIMER_PSC;
+	TIM17->PSC = TIMER_PSC_1;
 	/*select TI1 for TIM15_CH1*/
 	TIM17->CCMR1 |= TIM_CCMR1_CC1S_0;
 	/*dont use psc and filter */
@@ -71,9 +71,9 @@ void GeneralTimerConfig(){
 	
 	
 	/*TIM3/6/14 used to implement a phase meter*/
-	TIM3->PSC = TIMER_PSC;
-	TIM6->PSC = TIMER_PSC;
-	TIM14->PSC= TIMER_PSC;
+	TIM3->PSC = TIMER_PSC_2;
+	TIM6->PSC = TIMER_PSC_2;
+	TIM14->PSC= TIMER_PSC_2;
 	
 }
 
@@ -86,6 +86,7 @@ void EnableGeneralTimers(){
   	/*enable TIM17*/
   	TIM17->CR1 |= TIM_CR1_CEN; 
 }
+
 void DisableGeneralTimers(){
 	
 	TIM15->CR1 &= ~TIM_CR1_CEN; 

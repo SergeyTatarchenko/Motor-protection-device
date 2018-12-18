@@ -6,7 +6,7 @@
 
 #define DEFAULT_VOLTAGE_BUF_SIZE            3
 #define DEFAULT_PERIOD_BUF_SIZE             3
-#define DEFAULT_POWER_FACTOR_BUF_SIZE       4
+#define DEFAULT_POWER_FACTOR_BUF_SIZE       3
 
 #define PHASEMETER_A_VALUE  TIM3->CCR1
 #define PHASEMETER_B_VALUE  TIM6->CCR1
@@ -79,6 +79,10 @@ typedef struct{
 	uint16_t PhaseA_Factor;
 	uint16_t PhaseB_Factor;
 	uint16_t PhaseC_Factor;
+
+    uint16_t PhaseA_Cos;
+    uint16_t PhaseB_Cos;
+    uint16_t PhaseC_Cos;
 	
 } PowerFactor_REGISTR;
 #pragma pack(pop)
@@ -147,5 +151,7 @@ extern void EnableMetering(void);
 extern void DisableMetering(void);
 extern uint32_t itoa(int i,uint8_t *buff, uint8_t MesSize);
 extern uint_least8_t CheckPowerNetwork(void);
+extern uint16_t CalcPowerFactor(uint16_t shift, uint32_t period);
+
 #endif
 
