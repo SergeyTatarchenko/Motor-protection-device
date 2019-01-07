@@ -88,8 +88,7 @@ void vInitialStateCheck(void *pvParameters){
 	
 	/*testing*/
 	/*enable phase shift counter*/
-	//EnableMetering();
-	NVIC_EnableIRQ(EXTI0_1_IRQn);
+	EnableMetering();
 
 	/*delete task*/
 	vTaskDelete(NULL);
