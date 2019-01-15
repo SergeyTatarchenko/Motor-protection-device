@@ -144,6 +144,8 @@ extern uint32_t TIM16_CCR1_Array[2];
 extern uint32_t TIM17_CCR1_Array[2];
 
 extern int TimerWatchDog;
+extern int PowerFactorWatchDog;
+
 /*-------------------------------------------*/
 
 

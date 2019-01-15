@@ -30,33 +30,22 @@ void vSysInit(void *pvParameters){
 	DMA_InitTIM16();
 	/*init DMA for TIM17*/
 	DMA_InitTIM17();
-	/*enable timers*/
-	EnableGeneralTimers();
-	
+		
 	/*start I/O model*/
 	CapturedVoltagePointer =& CapturedVoltage;
 	VoltageTextLCDPointer =& VoltageTextLCD;
-	
 	CapturedPeriodPointer =&  CapturedPeriod;
 	PeriodLCDPointer = & PeriodLCD;
-	
 	PowerFactorPointer = &PowerFactor;
 	PowerFactorLCDPointer = & PowerFactorLCD;
 	
 	Init_LCD_1602();
-	
-	/*adc start*/
-	ADC_on;
-
-	/****test****/
 	EXTI_Init();
 	NVIC_Init();
-	/************/
-		
-	xTaskCreate(vADC_Conversion,"ADC convertion", configMINIMAL_STACK_SIZE, NULL, 2 , NULL );
-	xTaskCreate(vTIM_PeriodConversion,"TIM conversion", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	
 	/*start program*/
+	xTaskCreate(vADC_Conversion,"ADC convertion", configMINIMAL_STACK_SIZE, NULL, 2 , NULL );
+	xTaskCreate(vTIM_PeriodConversion,"TIM conversion", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	xTaskCreate(vInitialStateCheck,"initial loading", configMINIMAL_STACK_SIZE, NULL, 4, NULL );
 	
 	/*delete task*/
@@ -66,32 +55,86 @@ void vSysInit(void *pvParameters){
 /*check state routine */
 void vInitialStateCheck(void *pvParameters){
 	
-	/*initial delay for complete the calculation of the main parameters*/
-	vTaskDelay(1000);
+	uint_least8_t PowerNetworkStatus = 0;
 	
-	/*draw boot window*/
+	/*enable timers*/
+	EnableGeneralTimers();
+	/*adc start*/
+	ADC_on;
+	/*таймер стартует с частотой 1 к√ц, ј÷ѕ настроено на 12 бит, быстрое преобразование */
 	LCD_DrawBootWindow();
+	/*initial delay for complete the calculation of the main parameters*/
+	vTaskDelay(5000);
 	
-	vTaskDelay(1000);
-	
+		
 	/*add parameter control fuction */
+	PowerNetworkStatus =1;
 	
-	/*clear display*/
-	LCD_ClearDisplay();
-	vTaskDelay(2000);
+	if(PowerNetworkStatus){
+		/*clear display*/
+		LCD_ClearDisplay();
+		
+		/*Enable actuator*/
+		
+		vTaskDelay(2000);
+		LCD_DrawWorkspace();
 	
-	LCD_DrawWorkspace();
+		xTaskCreate(vI2CTransfer,"I2C Transmit", configMINIMAL_STACK_SIZE, NULL, 3, NULL );
+		xTaskCreate(vPowerFactorConversion,"PW conversion", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
 	
-	xTaskCreate(vI2CTransfer,"I2C Transmit", configMINIMAL_STACK_SIZE, NULL, 3, NULL );
-	
-	xTaskCreate(vPowerFactorConversion,"PW conversion", configMINIMAL_STACK_SIZE, NULL, 2, NULL );
-	
-	/*testing*/
-	/*enable phase shift counter*/
-	EnableMetering();
-
+		EnableMetering();
+		
+	}else{
+		/*add error control function*/
+	}
 	/*delete task*/
 	vTaskDelete(NULL);
+}
+/*Create voltage array for lcd transmit, calc value from ADC1*/
+void vADC_Conversion(void *pvParameters){
+	/*variable for ADC value*/
+	for(;;){
+		/*get ADC value in mV*/
+		CapturedVoltagePointer->PhaseA_Voltage = ADC_CalcValue(CapturedVoltageArray[0]);
+		CapturedVoltagePointer->PhaseB_Voltage = ADC_CalcValue(CapturedVoltageArray[1]);
+		CapturedVoltagePointer->PhaseC_Voltage = ADC_CalcValue(CapturedVoltageArray[2]);
+		
+		/*convert value to array*/
+		itoa(CapturedVoltagePointer->PhaseA_Voltage,VoltageTextLCDPointer->PhaseA_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
+		itoa(CapturedVoltagePointer->PhaseB_Voltage,VoltageTextLCDPointer->PhaseB_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
+		itoa(CapturedVoltagePointer->PhaseC_Voltage,VoltageTextLCDPointer->PhaseC_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
+		
+		vTaskDelay(200);
+	}
+}
+/*calc signal period,create array for lcd transmit*/
+void vTIM_PeriodConversion(void *pvParameters){
+	
+	for(;;){
+
+		/*get period and frequency value*/
+		if(TIM15_CCR1_Array[1] > TIM15_CCR1_Array[0]){
+			CapturedPeriodPointer->PhaseA_Period = (TIM15_CCR1_Array[1]-TIM15_CCR1_Array[0]);
+			/*get value in Hz*/
+			CapturedPeriodPointer->PhaseA_Frequency = (1*TIMER_MS)/(CapturedPeriodPointer->PhaseA_Period);
+		}
+		if(TIM16_CCR1_Array[1] > TIM16_CCR1_Array[0]){
+			CapturedPeriodPointer->PhaseB_Period = (TIM16_CCR1_Array[1]-TIM16_CCR1_Array[0]);
+			/*get value in Hz*/
+			CapturedPeriodPointer->PhaseB_Frequency = (1*TIMER_MS)/(CapturedPeriodPointer->PhaseB_Period);  
+		}
+		if(TIM17_CCR1_Array[1] > TIM17_CCR1_Array[0]){
+			CapturedPeriodPointer->PhaseC_Period = (TIM17_CCR1_Array[1]-TIM17_CCR1_Array[0]);
+			/*get value in Hz*/
+			CapturedPeriodPointer->PhaseC_Frequency = (1*TIMER_MS)/(CapturedPeriodPointer->PhaseC_Period);  
+		}	
+		/*convert frequency value to array*/
+		itoa(CapturedPeriodPointer->PhaseA_Frequency,PeriodLCDPointer->PhaseA_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
+		itoa(CapturedPeriodPointer->PhaseB_Frequency,PeriodLCDPointer->PhaseB_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
+		itoa(CapturedPeriodPointer->PhaseC_Frequency,PeriodLCDPointer->PhaseC_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
+
+		vTaskDelay(400);
+	}
 }
 
 /*transmit current data to lcd (demo function)*/	
@@ -177,28 +220,9 @@ void vI2CTransfer(void *pvParameters){
 
 			break;
 		}
-	vTaskDelay(500);
+	vTaskDelay(1000);
 	}
 }
-
-/*Create voltage array for lcd transmit, calc value from ADC1*/
-void vADC_Conversion(void *pvParameters){
-	/*variable for ADC value*/
-	for(;;){
-		/*get ADC value in mV*/
-		CapturedVoltagePointer->PhaseA_Voltage = ADC_CalcValue(CapturedVoltageArray[0]);
-		CapturedVoltagePointer->PhaseB_Voltage = ADC_CalcValue(CapturedVoltageArray[1]);
-		CapturedVoltagePointer->PhaseC_Voltage = ADC_CalcValue(CapturedVoltageArray[2]);
-		
-		/*convert value to array*/
-		itoa(CapturedVoltagePointer->PhaseA_Voltage,VoltageTextLCDPointer->PhaseA_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
-		itoa(CapturedVoltagePointer->PhaseB_Voltage,VoltageTextLCDPointer->PhaseB_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
-		itoa(CapturedVoltagePointer->PhaseC_Voltage,VoltageTextLCDPointer->PhaseC_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
-		
-		vTaskDelay(200);
-	}
-}
-
 void vPowerFactorConversion(void *pvParameters){
 
 	for(;;){
@@ -214,36 +238,4 @@ void vPowerFactorConversion(void *pvParameters){
 		
 		vTaskDelay(400);
 	}
-}
-/*calc signal period,create array for lcd transmit*/
-void vTIM_PeriodConversion(void *pvParameters){
-	
-	for(;;){
-
-		/*get period and frequency value*/
-		if(TIM15_CCR1_Array[1] > TIM15_CCR1_Array[0]){
-			CapturedPeriodPointer->PhaseA_Period = (TIM15_CCR1_Array[1]-TIM15_CCR1_Array[0]);
-			/*get value in Hz*/
-			CapturedPeriodPointer->PhaseA_Frequency = (1*TIMER_MS)/(CapturedPeriodPointer->PhaseA_Period);
-		}
-		
-		if(TIM16_CCR1_Array[1] > TIM16_CCR1_Array[0]){
-			CapturedPeriodPointer->PhaseB_Period = (TIM16_CCR1_Array[1]-TIM16_CCR1_Array[0]);
-			/*get value in Hz*/
-			CapturedPeriodPointer->PhaseB_Frequency = (1*TIMER_MS)/(CapturedPeriodPointer->PhaseB_Period);  
-		}
-		if(TIM17_CCR1_Array[1] > TIM17_CCR1_Array[0]){
-			CapturedPeriodPointer->PhaseC_Period = (TIM17_CCR1_Array[1]-TIM17_CCR1_Array[0]);
-			/*get value in Hz*/
-			CapturedPeriodPointer->PhaseC_Frequency = (1*TIMER_MS)/(CapturedPeriodPointer->PhaseC_Period);  
-		}
-				
-		/*convert frequency value to array*/
-		itoa(CapturedPeriodPointer->PhaseA_Frequency,PeriodLCDPointer->PhaseA_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
-		itoa(CapturedPeriodPointer->PhaseB_Frequency,PeriodLCDPointer->PhaseB_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
-		itoa(CapturedPeriodPointer->PhaseC_Frequency,PeriodLCDPointer->PhaseC_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
-
-		vTaskDelay(400);
-	}
-	
 }

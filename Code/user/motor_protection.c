@@ -33,7 +33,7 @@ uint32_t TIM16_CCR1_Array[2];
 uint32_t TIM17_CCR1_Array[2];
 
 int TimerWatchDog = 10;
-
+int PowerFactorWatchDog = 10;
 
 /*enable interrupt on phasemeter*/
 void EnableMetering(void){
