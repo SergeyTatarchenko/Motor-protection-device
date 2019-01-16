@@ -68,6 +68,7 @@ void vInitialStateCheck(void *pvParameters){
 	
 		
 	/*add parameter control fuction */
+	/*Проверка параметров сети, таких как частота, напряжение, последовательность фаз, разбаланс фаз*/
 	PowerNetworkStatus =1;
 	
 	if(PowerNetworkStatus){

@@ -283,50 +283,43 @@ void SystemCoreClockUpdate (void)
   */
 static void SetSysClock(void)
 {
-  __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
+  __IO uint32_t StartUpCounter = 0, HSIStatus = 0;
   
   /* SYSCLK, HCLK, PCLK configuration ----------------------------------------*/
-  /* Enable HSE */    
-  RCC->CR |= ((uint32_t)RCC_CR_HSEON);
- 
-  /* Wait till HSE is ready and if Time out is reached exit */
+	
+	/* Enable HSI */    
+  RCC->CR |= ((uint32_t)RCC_CR_HSION);
+  
+	/* Wait till HSI is ready and if Time out is reached exit */
   do
   {
-    HSEStatus = RCC->CR & RCC_CR_HSERDY;
+    HSIStatus = RCC->CR & RCC_CR_HSIRDY;
     StartUpCounter++;  
-  } while((HSEStatus == 0) && (StartUpCounter != HSE_STARTUP_TIMEOUT));
+  } while((HSIStatus == 0) && (StartUpCounter != HSI_STARTUP_TIMEOUT));
 
-  if ((RCC->CR & RCC_CR_HSERDY) != RESET)
-  {
-    HSEStatus = (uint32_t)0x01;
-  }
-  else
-  {
-    HSEStatus = (uint32_t)0x00;
+  if ((RCC->CR & RCC_CR_HSIRDY) != RESET){
+    HSIStatus = (uint32_t)0x01;
+  }else{
+    HSIStatus = (uint32_t)0x00;
   }  
-
-  if (HSEStatus == (uint32_t)0x01)
-  {
+  if (HSIStatus == (uint32_t)0x01){
+	  
     /* Enable Prefetch Buffer and set Flash Latency */
     FLASH->ACR = FLASH_ACR_PRFTBE | FLASH_ACR_LATENCY;
  
-    /* HCLK = SYSCLK */
-    RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
-      
-    /* PCLK = HCLK */
-    RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE_DIV1;
+    /* APB and AHB clock nod divided */
+    RCC->CFGR &= ~(uint32_t)RCC_CFGR_HPRE_DIV1;
+    RCC->CFGR &= ~(uint32_t)RCC_CFGR_PPRE_DIV1;
 
-    /* PLL configuration = HSE * 6 = 48 MHz */
+    /* PLL configuration = HSI/2 * 12 = 48 MHz */
     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL));
-    RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_PREDIV1 | RCC_CFGR_PLLXTPRE_PREDIV1 | RCC_CFGR_PLLMULL6);
+    RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSI_DIV2 | RCC_CFGR_PLLMULL12);
             
     /* Enable PLL */
     RCC->CR |= RCC_CR_PLLON;
 
     /* Wait till PLL is ready */
-    while((RCC->CR & RCC_CR_PLLRDY) == 0)
-    {
-    }
+    while((RCC->CR & RCC_CR_PLLRDY) == 0){}
 
     /* Select PLL as system clock source */
     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
