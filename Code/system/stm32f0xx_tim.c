@@ -79,11 +79,8 @@ void GeneralTimerConfig(){
 
 void EnableGeneralTimers(){
 
-	/*enable TIM15*/
   	TIM15->CR1 |= TIM_CR1_CEN; 
-  	/*enable TIM16*/
   	TIM16->CR1 |= TIM_CR1_CEN; 
-  	/*enable TIM17*/
   	TIM17->CR1 |= TIM_CR1_CEN; 
 }
 

@@ -21,16 +21,19 @@
 /*----------------------*/
 extern uint32_t ContentSwitching;
 /*----------------------*/
-/*2 level peiority*/
-void vADC_Conversion(void *pvParameters);
-void vTIM_PeriodConversion(void *pvParameters);
-void vPowerFactorConversion(void *pvParameters);
 
 /*3 level peiority*/
-void vI2CTransfer(void *pvParameters);
-void vInitialStateCheck(void *pvParameters);
-
+void main_TASK(void *pvParameters);
 /*4 level peiority*/
-void vSysInit(void *pvParameters);
+void check_state_TASK(void *pvParameters);
+void error_handler_TASK(void *pvParameters);
+/*----------------------*/	
+void SysInit(void);
+void frequency_conversion(void);
+void adc_conversion(void);
+void power_factor_conversion(void);
+void phase_rotation_conversion(void);
 
+void i2c_transfer(void);
+void text_ascii_conversion(void);
 #endif

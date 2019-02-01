@@ -7,7 +7,7 @@
 
 int main(){
 	
-	xTaskCreate(vSysInit,"start", configMINIMAL_STACK_SIZE, NULL, 4, NULL );
+	xTaskCreate(check_state_TASK,"program start", configMINIMAL_STACK_SIZE, NULL, 4, NULL );
 	
 	/*run RTOS*/
 	vTaskStartScheduler();
