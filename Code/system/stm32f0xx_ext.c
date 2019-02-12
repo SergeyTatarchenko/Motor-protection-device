@@ -31,8 +31,8 @@ void EXTI_Init(){
 	/*rising edge interrupt on PA0*/
 	EXTI->RTSR |=EXTI_RTSR_TR0;
 	
-	/*interrupt mask*/
-	EXTI->IMR |=(EXTI_IMR_MR0|EXTI_IMR_MR1|EXTI_IMR_MR4);
+	/*user button interrupt mask (for demo)*/
+	EXTI->IMR |=(EXTI_IMR_MR0);
 
 }
 
@@ -64,14 +64,11 @@ void EXTI0_1_IRQHandler(){
 	/*start measuring the phase shift for phase A and stop for measuring phase B */
 	
 	/*interrupt on PC1 */
-	if(EXTI->PR & EXTI_PR_PR1){
-				
+	if(EXTI->PR & EXTI_PR_PR1){			
 		/*start timer for fhase A shift*/
 		PHASEMETER_A_START;
-
 		/*reset interrupt trigger*/
 		EXTI->PR |= EXTI_PR_PR1;
-		GPIOC->BSRR |= GPIO_BSRR_BR_9;
 	}
 		
 	
@@ -117,7 +114,6 @@ void EXTI4_15_IRQHandler(){
 		PHASEMETER_A_STOP;
 		
 		if(PHASEMETER_A_VALUE > 0){
-			GPIOC->BSRR |= GPIO_BSRR_BS_8;
 			/*get value from timer in us*/
 			PowerFactorPointer->PhaseA_Factor = PHASEMETER_A_VALUE;
 			/*clear buffer*/

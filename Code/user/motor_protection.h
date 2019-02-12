@@ -20,9 +20,15 @@
 #define PHASEMETER_B_STOP    TIMER_6_STOP    
 #define PHASEMETER_C_STOP    TIMER_14_STOP   
 
+#define PHASEMETR_A_IRQ			(EXTI_IMR_MR1|EXTI_IMR_MR4)
+
 
 #define TIMER_MS    1000
 #define TIMER_US    1000000UL
+
+
+#define DEFAULT_FREQUENCY			50
+#define FREQUENCY_SENSETIVITY	4
 
 #pragma pack(push,1)
 typedef struct{
@@ -146,6 +152,7 @@ extern uint32_t TIM17_CCR1_Array[2];
 extern int TimerWatchDog;
 extern int PowerFactorWatchDog;
 
+extern int FreqErrorCnt;
 /*-------------------------------------------*/
 
 
