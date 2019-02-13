@@ -1,5 +1,15 @@
 #include "motor_protection.h"
 
+/*initial configuration*/
+MotorConfiguration_REGISTR MotorConfiguration;
+MotorConfiguration_REGISTR *MotorConfigurationPointer;
+
+/*error array */
+ErrorArray_REGISTR ErrorArray;
+/*watchdog*/
+WatchDog_REGISTR WatchDog;
+WatchDog_REGISTR *WatchDogPointer;
+
 /*captured voltage from ADC with DMA*/ 
 CapturedVoltage_REGISTR CapturedVoltage;
 CapturedVoltage_REGISTR *CapturedVoltagePointer;
@@ -32,28 +42,6 @@ uint32_t TIM15_CCR1_Array[2];
 uint32_t TIM16_CCR1_Array[2];
 uint32_t TIM17_CCR1_Array[2];
 
-int TimerWatchDog = 10;
-int PowerFactorWatchDog = 10;
-
-int FreqErrorCnt = 5;
-
-/*enable interrupt on phasemeter*/
-void EnableMetering(void){
-	
-	NVIC_EnableIRQ(EXTI0_1_IRQn);
-	NVIC_EnableIRQ(EXTI2_3_IRQn);
-	NVIC_EnableIRQ(EXTI4_15_IRQn);
-
-}
-
-/*disable interrupt on phasemeter*/
-void DisableMetering(void){
-	
-	NVIC_DisableIRQ(EXTI0_1_IRQn);
-	NVIC_DisableIRQ(EXTI2_3_IRQn);
-	NVIC_DisableIRQ(EXTI4_15_IRQn);
-	
-}
 
 /*Check status of power network*/ 
 uint_least8_t CheckPowerNetwork(void){
@@ -61,9 +49,47 @@ uint_least8_t CheckPowerNetwork(void){
 	uint_least8_t status;
 	
 	
+	ErrorArray.phase_failure_error = freq_watchdog(WatchDogPointer);
+	/*проверка на обрыв фаз,чувствительность задается программно*/
 	
+	if(ErrorArray.phase_failure_error == PHASE_A ){
+		
+		BLUE_LED_ON;
+	}else{
+		BLUE_LED_OFF;
+	}
+	/*контроль частоты сети, чувствительность задается программно*/
+	if((CapturedPeriodPointer->PhaseA_Frequency > MotorConfigurationPointer->MaxPhasefrequency)||
+	   (CapturedPeriodPointer->PhaseA_Frequency < MotorConfigurationPointer->MinPhasefrequency)){   
+		GREEN_LED_ON;
+	}else{
+		GREEN_LED_OFF;
+	
+	}
+	status = 0;
 	return status;
  }
+
+/*frequency watchdog, return frequency error number*/
+ 
+uint_least8_t freq_watchdog(WatchDog_REGISTR *pointer){
+	
+	uint_least8_t error;
+	
+	if (pointer->FrequencyPhaseA < FREQUENCY_SENSETIVITY ){
+		error = PHASE_A;
+	}
+	else {
+		error = 0;
+	}
+	if(pointer->FrequencyPhaseB < FREQUENCY_SENSETIVITY ){
+	//	error = error |PHASE_B;
+	}
+	if(pointer->FrequencyPhaseC < FREQUENCY_SENSETIVITY){
+	//	error = error|PHASE_C;
+	}
+	return error;
+}
 
 /*calculate power factor, return result in deg */
 uint16_t CalcPowerFactor(uint16_t shift, uint32_t period){

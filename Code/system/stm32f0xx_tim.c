@@ -45,14 +45,14 @@ void GeneralTimerConfig(){
 	/*select TI1 for TIM15_CH1*/
 	TIM16->CCMR1 |= TIM_CCMR1_CC1S_0;
 	/*dont use psc and filter */
-  TIM16->CCMR1 &= ~(TIM_CCMR1_IC1F | TIM_CCMR1_IC1PSC);
+	TIM16->CCMR1 &= ~(TIM_CCMR1_IC1F | TIM_CCMR1_IC1PSC);
 	TIM16->CCMR1 |= TIM_CCMR1_IC1F_0|TIM_CCMR1_IC1F_1;
 	/*DMA enable*/
 	TIM16->DIER |= TIM_DIER_CC1DE ;
 	/*rising edge*/
-  TIM16->CCER &= ~TIM_CCER_CC1P;
+	TIM16->CCER &= ~TIM_CCER_CC1P;
 	/*CCP enable*/
-  TIM16->CCER |= TIM_CCER_CC1E;   
+	TIM16->CCER |= TIM_CCER_CC1E;   
 
   /******** TIM17 config*********/
   	
@@ -78,15 +78,16 @@ void GeneralTimerConfig(){
 }
 
 void EnableGeneralTimers(){
+	
+	TIM15->CR1 |= TIM_CR1_CEN; 
+	TIM16->CR1 |= TIM_CR1_CEN;
+	TIM17->CR1 |= TIM_CR1_CEN; 
 
-  	TIM15->CR1 |= TIM_CR1_CEN; 
-  	TIM16->CR1 |= TIM_CR1_CEN; 
-  	TIM17->CR1 |= TIM_CR1_CEN; 
 }
 
 void DisableGeneralTimers(){
 	
 	TIM15->CR1 &= ~TIM_CR1_CEN; 
-  TIM16->CR1 &= ~TIM_CR1_CEN; 
-  TIM17->CR1 &= ~TIM_CR1_CEN; 
+	TIM16->CR1 &= ~TIM_CR1_CEN; 
+	TIM17->CR1 &= ~TIM_CR1_CEN; 
 }

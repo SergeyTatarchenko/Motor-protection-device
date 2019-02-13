@@ -539,6 +539,11 @@
               <FileType>5</FileType>
               <FilePath>.\Code\user\FreeRTOSConfig.h</FilePath>
             </File>
+            <File>
+              <FileName>constants.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Code\user\constants.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

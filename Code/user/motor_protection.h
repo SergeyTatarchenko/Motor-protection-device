@@ -3,6 +3,13 @@
 
 #include "stm32f0xx.h"
 #include "stm32f0xx_tim.h"
+#include "constants.h"
+
+#define GREEN_LED_ON	(GPIOC->BSRR |=GPIO_BSRR_BS_9)
+#define GREEN_LED_OFF	(GPIOC->BSRR |=GPIO_BSRR_BR_9)
+
+#define BLUE_LED_ON		(GPIOC->BSRR |=GPIO_BSRR_BS_8)
+#define BLUE_LED_OFF	(GPIOC->BSRR |=GPIO_BSRR_BR_8)
 
 #define DEFAULT_VOLTAGE_BUF_SIZE            3
 #define DEFAULT_PERIOD_BUF_SIZE             3
@@ -20,15 +27,11 @@
 #define PHASEMETER_B_STOP    TIMER_6_STOP    
 #define PHASEMETER_C_STOP    TIMER_14_STOP   
 
-#define PHASEMETR_A_IRQ			(EXTI_IMR_MR1|EXTI_IMR_MR4)
+#define PHASEMETR_A_IRQ		(EXTI_IMR_MR1|EXTI_IMR_MR4)
 
 
 #define TIMER_MS    1000
 #define TIMER_US    1000000UL
-
-
-#define DEFAULT_FREQUENCY			50
-#define FREQUENCY_SENSETIVITY	4
 
 #pragma pack(push,1)
 typedef struct{
@@ -109,12 +112,42 @@ typedef struct{
 
     uint16_t MinPhaseVoltage;
     uint16_t MaxPhaseVoltage;
-    uint16_t frequency;
+    uint16_t MinPhasefrequency;
+    uint16_t MaxPhasefrequency;
 
-
-}MotorConfiguration_REGISTR;
+} MotorConfiguration_REGISTR;
 #pragma pack(pop)
 
+#pragma pack(push,1)
+typedef struct{
+	
+    int_fast16_t FrequencyPhaseA;
+    int_fast16_t FrequencyPhaseB;
+    int_fast16_t FrequencyPhaseC;
+	
+} WatchDog_REGISTR;
+#pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct{
+	
+	uint8_t frequency_error;
+	uint8_t phase_shift_error;
+	uint8_t phase_imbalance_error;
+	uint8_t power_factor_error;
+	uint8_t phase_failure_error;
+	
+} ErrorArray_REGISTR;
+#pragma pack(pop)
+
+/*initial configuration*/
+extern MotorConfiguration_REGISTR MotorConfiguration;
+extern MotorConfiguration_REGISTR *MotorConfigurationPointer;
+/*error array */
+extern ErrorArray_REGISTR ErrorArray;
+/*watchdog*/
+extern WatchDog_REGISTR WatchDog;
+extern WatchDog_REGISTR *WatchDogPointer;
 
 
 /*captured voltage from ADC with DMA*/ 
@@ -149,18 +182,11 @@ extern uint32_t TIM15_CCR1_Array[2];
 extern uint32_t TIM16_CCR1_Array[2];
 extern uint32_t TIM17_CCR1_Array[2];
 
-extern int TimerWatchDog;
-extern int PowerFactorWatchDog;
-
-extern int FreqErrorCnt;
 /*-------------------------------------------*/
 
-
-extern void EnableMetering(void);
-extern void DisableMetering(void);
 extern uint32_t itoa(int i,uint8_t *buff, uint8_t MesSize);
 extern uint_least8_t CheckPowerNetwork(void);
 extern uint16_t CalcPowerFactor(uint16_t shift, uint32_t period);
-
+extern uint_least8_t freq_watchdog(WatchDog_REGISTR *pointer);
 #endif
 

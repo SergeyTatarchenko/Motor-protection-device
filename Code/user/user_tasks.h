@@ -15,10 +15,6 @@
 #include "pcf8574.h"
 #include "motor_protection.h"
 /*----------------------*/
-#define PHASE_A  1
-#define PHASE_B  2
-#define PHASE_C  3
-/*----------------------*/
 extern uint32_t ContentSwitching;
 /*----------------------*/
 

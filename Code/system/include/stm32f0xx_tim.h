@@ -14,6 +14,7 @@
 #define TIMER_6_STOP    (TIM6->CR1 &= ~TIM_CR1_CEN)
 #define TIMER_14_STOP   (TIM14->CR1&= ~TIM_CR1_CEN)
 
+
 #define CLEAR_BUFFER_TIM3   (TIM3->CNT =  0)
 #define CLEAR_BUFFER_TIM6   (TIM6->CNT =  0)
 #define CLEAR_BUFFER_TIM14  (TIM14->CNT = 0)

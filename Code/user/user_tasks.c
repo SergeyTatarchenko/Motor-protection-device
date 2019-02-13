@@ -1,15 +1,10 @@
 #include <stm32f0xx.h>
+#include <stm32f0xx.h>
 #include "user_tasks.h"
 
 /*sys inc*/
 #include "stm32f0xx_dma.h"
 #include "stm32f0xx_ext.h"
-
-#define GREEN_LED_ON	(GPIOC->BSRR |=GPIO_BSRR_BS_9)
-#define GREEN_LED_OFF	(GPIOC->BSRR |=GPIO_BSRR_BR_9)
-
-#define BLUE_LED_ON		(GPIOC->BSRR |=GPIO_BSRR_BS_8)
-#define BLUE_LED_OFF	(GPIOC->BSRR |=GPIO_BSRR_BR_8)
 
 uint32_t ContentSwitching = 1;
 
@@ -25,17 +20,14 @@ void check_state_TASK(void *pvParameters){
 	uint_least8_t PowerNetworkStatus;
 	/*all peripherals init*/
 	SysInit();
-	
 	ADC_on;
 	EnableGeneralTimers();
-	
-	/* for demo */
-	NVIC_EnableIRQ(EXTI0_1_IRQn);
+	vTaskDelay(2000);
 	
 	/*add check network state function */
-	PowerNetworkStatus = 1;
+	PowerNetworkStatus = CheckPowerNetwork();
 	
-	if(PowerNetworkStatus == 1){
+	if(!PowerNetworkStatus){
 		
 		xErrorHandler = xSemaphoreCreateBinary();
 		xMutex_BUS_BUSY = xSemaphoreCreateMutex();
@@ -72,25 +64,13 @@ void error_handler_TASK(void *pvParameters){
 }
 void main_TASK(void *pvParameters){
 	
-	//NVIC_EnableIRQ(EXTI0_1_IRQn);
-	//NVIC_EnableIRQ(EXTI2_3_IRQn);
-	//NVIC_EnableIRQ(EXTI4_15_IRQn);
-	
 	for(;;){
 		
 		adc_conversion();
 		frequency_conversion();
-		
-		/*test error counter*/
-		if(FreqErrorCnt < FREQUENCY_SENSETIVITY){
-			GREEN_LED_ON;
-		}
-		else{
-			GREEN_LED_OFF;
-		}
-		//	power_factor_conversion();
+		CheckPowerNetwork();
+		/*working part*/
 		text_ascii_conversion();
-		
 		/*i2c transmit to LCD*/
 		xSemaphoreTake(xMutex_BUS_BUSY,portMAX_DELAY);
 		i2c_transfer();
@@ -123,48 +103,67 @@ void SysInit(){
 	VoltageTextLCDPointer =& VoltageTextLCD;
 	CapturedPeriodPointer =&  CapturedPeriod;
 	PeriodLCDPointer = & PeriodLCD;
-	PowerFactorPointer = &PowerFactor;
+	PowerFactorPointer = & PowerFactor;
 	PowerFactorLCDPointer = & PowerFactorLCD;
+	
+	WatchDogPointer = & WatchDog;
+	MotorConfigurationPointer = & MotorConfiguration;
+	
+	/*initial parameter loading*/
+	MotorConfiguration.MaxPhaseVoltage = 0;
+	MotorConfiguration.MinPhaseVoltage = 0;
+	MotorConfiguration.MinPhasefrequency = (uint16_t)DEFAULT_FREQUENCY_MIN;
+	MotorConfiguration.MaxPhasefrequency = (uint16_t)DEFAULT_FREQUENCY_MAX;
 	
 	Init_LCD_1602();
 }
 
 void frequency_conversion(){
 	
-		/*get period and frequency value*/
-		if((TIM15_CCR1_Array[1] > TIM15_CCR1_Array[0])&&(TIM15_CCR1_Array[1]<0x9C40)){
-			TimerWatchDog = 10;
-			
-			CapturedPeriodPointer->PhaseA_Period = (TIM15_CCR1_Array[1]-TIM15_CCR1_Array[0]);
-			TIM15->CCR1 = 0;
-			TIM15_CCR1_Array[0]=0;
-			TIM15_CCR1_Array[1]=0;
-			/*get value in Hz*/
-			CapturedPeriodPointer->PhaseA_Frequency = (1*TIMER_US)/(CapturedPeriodPointer->PhaseA_Period) + 1;
+	DisableGeneralTimers();	
+	/*get period and frequency value*/
+	if(TIM15_CCR1_Array[1] > TIM15_CCR1_Array[0]){
+		WatchDogPointer->FrequencyPhaseA = FREQUENCY_WATCHDOG_VALUE;
+		CapturedPeriodPointer->PhaseA_Period = (TIM15_CCR1_Array[1]-TIM15_CCR1_Array[0]);
+		TIM15->CCR1 = 0;
+		TIM15_CCR1_Array[0]=0;
+		TIM15_CCR1_Array[1]=0;
+		/*get value in Hz*/
+		CapturedPeriodPointer->PhaseA_Frequency = (1*TIMER_US)/(CapturedPeriodPointer->PhaseA_Period) + 1;
+	}
+	else{
+		if(WatchDogPointer->FrequencyPhaseA > 0){
+			WatchDogPointer->FrequencyPhaseA--;
 		}
-		
+	}	
 	if(TIM16_CCR1_Array[1] > TIM16_CCR1_Array[0]){
+		WatchDogPointer->FrequencyPhaseB = FREQUENCY_WATCHDOG_VALUE;
 		CapturedPeriodPointer->PhaseB_Period = (TIM16_CCR1_Array[1]-TIM16_CCR1_Array[0]);
 		TIM16->CCR1 = 0;
 		TIM16_CCR1_Array[0]=0;
 		TIM16_CCR1_Array[1]=0;
 		/*get value in Hz*/
 		CapturedPeriodPointer->PhaseB_Frequency = (1*TIMER_US)/(CapturedPeriodPointer->PhaseB_Period);  
+	}else{
+		if(WatchDogPointer->FrequencyPhaseB > 0){
+			WatchDogPointer->FrequencyPhaseB--;
+		}
 	}
 	if(TIM17_CCR1_Array[1] > TIM17_CCR1_Array[0]){
+		WatchDogPointer->FrequencyPhaseC = FREQUENCY_WATCHDOG_VALUE;
 		CapturedPeriodPointer->PhaseC_Period = (TIM17_CCR1_Array[1]-TIM17_CCR1_Array[0]);
 			TIM17->CCR1 = 0;
 			TIM17_CCR1_Array[0]=0;
 			TIM17_CCR1_Array[1]=0;
 		/*get value in Hz*/
 		CapturedPeriodPointer->PhaseC_Frequency = (1*TIMER_US)/(CapturedPeriodPointer->PhaseC_Period);  
-	}	
-	
-	if((CapturedPeriodPointer->PhaseA_Frequency != DEFAULT_FREQUENCY)){	
-		FreqErrorCnt --;
 	}else{
-		FreqErrorCnt = 5;
+		if(WatchDogPointer->FrequencyPhaseC > 0){
+			WatchDogPointer->FrequencyPhaseC--;
+		}
 	}
+	
+	EnableGeneralTimers();	
 }
 
 void adc_conversion(){
@@ -175,7 +174,6 @@ void adc_conversion(){
 	CapturedVoltagePointer->PhaseC_Voltage = ADC_CalcValue(CapturedVoltageArray[2]);
 	
 }
-
 void power_factor_conversion(){
 	
 	/*calc power factor value*/
