@@ -255,7 +255,7 @@ void i2c_transfer(){
 				
 			break;
 
-			case PHASE_C:
+			case (PHASE_C -1):
 				LCD_SetDRAM_Adress(0x01);
 				LCD_SendChar('C');
 				/*voltage data*/

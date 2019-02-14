@@ -58,6 +58,7 @@ uint_least8_t CheckPowerNetwork(void){
 	}else{
 		BLUE_LED_OFF;
 	}
+	
 	/*контроль частоты сети, чувствительность задается программно*/
 	if((CapturedPeriodPointer->PhaseA_Frequency > MotorConfigurationPointer->MaxPhasefrequency)||
 	   (CapturedPeriodPointer->PhaseA_Frequency < MotorConfigurationPointer->MinPhasefrequency)){   
