@@ -133,6 +133,10 @@ uint32_t itoa(int i,uint8_t *buff,uint8_t MesSize){
 			buff[counter] = 0;
 			}
 		}
+	}else if(i == 0){
+		for(counter = 0; counter < MesSize; counter++){
+			buff[counter] = 0;
+			}
 	} 
 	return array_size;
 }

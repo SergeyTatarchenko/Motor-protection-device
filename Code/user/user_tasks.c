@@ -21,8 +21,7 @@ void check_state_TASK(void *pvParameters){
 	/*all peripherals init*/
 	SysInit();
 	ADC_on;
-	EnableGeneralTimers();
-	vTaskDelay(2000);
+	vTaskDelay(1000);
 	
 	/*add check network state function */
 	PowerNetworkStatus = CheckPowerNetwork();
@@ -38,6 +37,9 @@ void check_state_TASK(void *pvParameters){
 			
 			xTaskCreate(&error_handler_TASK,"error handler",configMINIMAL_STACK_SIZE, NULL, 4 , NULL );
 			xTaskCreate(&main_TASK,"main cycle",configMINIMAL_STACK_SIZE, NULL, 3 , NULL );
+			
+			/*user button interrupt enable (for demo)*/
+			NVIC_EnableIRQ(EXTI0_1_IRQn);
 		
 		}else{
 			/*internal cicruit error*/
@@ -67,7 +69,9 @@ void main_TASK(void *pvParameters){
 	for(;;){
 		
 		adc_conversion();
+		
 		frequency_conversion();
+		
 		CheckPowerNetwork();
 		/*working part*/
 		text_ascii_conversion();
@@ -120,11 +124,12 @@ void SysInit(){
 
 void frequency_conversion(){
 	
-	DisableGeneralTimers();	
+			DisableGeneralTimers();	
 	/*get period and frequency value*/
 	if(TIM15_CCR1_Array[1] > TIM15_CCR1_Array[0]){
 		WatchDogPointer->FrequencyPhaseA = FREQUENCY_WATCHDOG_VALUE;
 		CapturedPeriodPointer->PhaseA_Period = (TIM15_CCR1_Array[1]-TIM15_CCR1_Array[0]);
+		TIM15->CNT = 0;
 		TIM15->CCR1 = 0;
 		TIM15_CCR1_Array[0]=0;
 		TIM15_CCR1_Array[1]=0;
@@ -139,6 +144,7 @@ void frequency_conversion(){
 	if(TIM16_CCR1_Array[1] > TIM16_CCR1_Array[0]){
 		WatchDogPointer->FrequencyPhaseB = FREQUENCY_WATCHDOG_VALUE;
 		CapturedPeriodPointer->PhaseB_Period = (TIM16_CCR1_Array[1]-TIM16_CCR1_Array[0]);
+		TIM16->CNT = 0;
 		TIM16->CCR1 = 0;
 		TIM16_CCR1_Array[0]=0;
 		TIM16_CCR1_Array[1]=0;
@@ -152,6 +158,7 @@ void frequency_conversion(){
 	if(TIM17_CCR1_Array[1] > TIM17_CCR1_Array[0]){
 		WatchDogPointer->FrequencyPhaseC = FREQUENCY_WATCHDOG_VALUE;
 		CapturedPeriodPointer->PhaseC_Period = (TIM17_CCR1_Array[1]-TIM17_CCR1_Array[0]);
+			TIM17->CNT = 0;
 			TIM17->CCR1 = 0;
 			TIM17_CCR1_Array[0]=0;
 			TIM17_CCR1_Array[1]=0;
@@ -194,11 +201,11 @@ void text_ascii_conversion(){
 	itoa(CapturedPeriodPointer->PhaseA_Frequency,PeriodLCDPointer->PhaseA_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
 	itoa(CapturedPeriodPointer->PhaseB_Frequency,PeriodLCDPointer->PhaseB_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
 	itoa(CapturedPeriodPointer->PhaseC_Frequency,PeriodLCDPointer->PhaseC_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
-	
-	/*convert power factor value*/
-	itoa(PowerFactorPointer->PhaseA_Cos,PowerFactorLCDPointer->PhaseA_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
-	itoa(PowerFactorPointer->PhaseB_Cos,PowerFactorLCDPointer->PhaseB_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
-	itoa(PowerFactorPointer->PhaseC_Cos,PowerFactorLCDPointer->PhaseC_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
+//	
+//	/*convert power factor value*/
+//	itoa(PowerFactorPointer->PhaseA_Cos,PowerFactorLCDPointer->PhaseA_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
+//	itoa(PowerFactorPointer->PhaseB_Cos,PowerFactorLCDPointer->PhaseB_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
+//	itoa(PowerFactorPointer->PhaseC_Cos,PowerFactorLCDPointer->PhaseC_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
 }
 
 

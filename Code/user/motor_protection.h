@@ -31,7 +31,7 @@
 
 
 #define TIMER_MS    1000
-#define TIMER_US    1000000UL
+#define TIMER_US    100000UL
 
 #pragma pack(push,1)
 typedef struct{

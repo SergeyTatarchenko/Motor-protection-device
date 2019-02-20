@@ -3,7 +3,7 @@
 
 #include "stm32f0xx.h"
 /*-----------local define-----------------------*/
-#define TIMER_PSC_1   (uint16_t)(48-1)  /*get 1 MHz timer frequency*/
+#define TIMER_PSC_1   (uint16_t)(480-1)  /*get 1 MHz timer frequency*/
 #define TIMER_PSC_2   48000-1 	 				/*get 1 kHz timer frequency*/
 
 #define TIMER_3_START   (TIM3->CR1 |=  TIM_CR1_CEN)
