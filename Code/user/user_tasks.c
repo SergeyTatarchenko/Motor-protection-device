@@ -174,22 +174,62 @@ void frequency_conversion(){
 }
 
 void adc_conversion(){
+
 	float temp;
 	/*get ADC value in mV*/
-	CapturedVoltagePointer->PhaseA_Voltage = ADC_CalcValue(CapturedVoltageArray[0]);
-	if(CapturedVoltagePointer->PhaseA_Voltage > 200){
-		CapturedVoltagePointer->PhaseA_Voltage += (uint32_t)DIODE_DROP;
-		CapturedVoltagePointer->PhaseA_Voltage *= 2;
-		temp = (float)CapturedVoltagePointer->PhaseA_Voltage;
+	CapturedVoltagePointer->PhaseA_Voltage_peak = ADC_CalcValue(CapturedVoltageArray[0]);
+	if(CapturedVoltagePointer->PhaseA_Voltage_peak > 200){
+		/*include voltage drop on diode*/
+		CapturedVoltagePointer->PhaseA_Voltage_peak += (uint32_t)DIODE_DROP;
+		/*input voltage divider*/
+		CapturedVoltagePointer->PhaseA_Voltage_peak *= VOLTAGE_PREDIV;
+		
+		/*get rms voltage for display (demo) */
+		temp = (float)CapturedVoltagePointer->PhaseA_Voltage_peak;
 		temp = temp * 0.707;
-		CapturedVoltagePointer->PhaseA_Voltage = ((uint32_t)temp/10);
+		CapturedVoltagePointer->PhaseA_Voltage_rms = ((uint32_t)temp/10);
+		/**/
 	}else{
-		CapturedVoltagePointer->PhaseA_Voltage = 0;
+		CapturedVoltagePointer->PhaseA_Voltage_peak = 0;
+		CapturedVoltagePointer->PhaseA_Voltage_rms = 0;
+
 	}
-	
-	CapturedVoltagePointer->PhaseB_Voltage = ADC_CalcValue(CapturedVoltageArray[1]);
-	CapturedVoltagePointer->PhaseC_Voltage = ADC_CalcValue(CapturedVoltageArray[2]);
-	
+
+	CapturedVoltagePointer->PhaseB_Voltage_peak = ADC_CalcValue(CapturedVoltageArray[1]);
+	if(CapturedVoltagePointer->PhaseB_Voltage_peak > 200){
+		/*include voltage drop on diode*/
+		CapturedVoltagePointer->PhaseB_Voltage_peak += (uint32_t)DIODE_DROP;
+		/*input voltage divider*/
+		CapturedVoltagePointer->PhaseB_Voltage_peak *= VOLTAGE_PREDIV;
+		
+		/*get rms voltage for display (demo) */
+		temp = (float)CapturedVoltagePointer->PhaseB_Voltage_peak;
+		temp = temp * 0.707;
+		CapturedVoltagePointer->PhaseB_Voltage_rms = ((uint32_t)temp/10);
+		/**/
+	}else{
+		CapturedVoltagePointer->PhaseB_Voltage_peak = 0;
+		CapturedVoltagePointer->PhaseB_Voltage_rms = 0;
+
+	}
+
+	CapturedVoltagePointer->PhaseC_Voltage_peak = ADC_CalcValue(CapturedVoltageArray[2]);
+	if(CapturedVoltagePointer->PhaseC_Voltage_peak > 200){
+		/*include voltage drop on diode*/
+		CapturedVoltagePointer->PhaseC_Voltage_peak += (uint32_t)DIODE_DROP;
+		/*input voltage divider*/
+		CapturedVoltagePointer->PhaseC_Voltage_peak *= VOLTAGE_PREDIV;
+		
+		/*get rms voltage for display (demo) */
+		temp = (float)CapturedVoltagePointer->PhaseC_Voltage_peak;
+		temp = temp * 0.707;
+		CapturedVoltagePointer->PhaseC_Voltage_rms = ((uint32_t)temp/10);
+		/**/
+	}else{
+		CapturedVoltagePointer->PhaseC_Voltage_peak = 0;
+		CapturedVoltagePointer->PhaseC_Voltage_rms = 0;
+
+	}
 }
 void power_factor_conversion(){
 	
@@ -202,10 +242,10 @@ void power_factor_conversion(){
 /*create text arrays for lcd*/
 void text_ascii_conversion(){
 	
-	/*convert adc value*/
-	itoa(CapturedVoltagePointer->PhaseA_Voltage,VoltageTextLCDPointer->PhaseA_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
-	itoa(CapturedVoltagePointer->PhaseB_Voltage,VoltageTextLCDPointer->PhaseB_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
-	itoa(CapturedVoltagePointer->PhaseC_Voltage,VoltageTextLCDPointer->PhaseC_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
+	/*convert adc voltage rms value*/
+	itoa(CapturedVoltagePointer->PhaseA_Voltage_rms,VoltageTextLCDPointer->PhaseA_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
+	itoa(CapturedVoltagePointer->PhaseB_Voltage_rms,VoltageTextLCDPointer->PhaseB_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
+	itoa(CapturedVoltagePointer->PhaseC_Voltage_rms,VoltageTextLCDPointer->PhaseC_VoltageArray,DEFAULT_VOLTAGE_BUF_SIZE);
 	
 	/*convert frequency value*/
 	itoa(CapturedPeriodPointer->PhaseA_Frequency,PeriodLCDPointer->PhaseA_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
@@ -225,22 +265,22 @@ void i2c_transfer(){
 	switch(ContentSwitching){
 			
 			case PHASE_A:
-					LCD_SetDRAM_Adress(0x01);
+					LCD_SetDRAM_Adress(DDRAM_adress_row_0);
 					LCD_SendChar('A');
 				/*voltage data*/
-				LCD_SetDRAM_Adress(DDRAM_adress_row_0+3);
+				LCD_SetDRAM_Adress(DDRAM_adress_row_0+7);
 				for(counter = 0 ; counter < DEFAULT_VOLTAGE_BUF_SIZE; counter++){
 					/*phase A */
 					LCD_SendChar(VoltageTextLCDPointer->PhaseA_VoltageArray[counter]+0x30);
 				}
 				/*frequency data*/
-				LCD_SetDRAM_Adress(DDRAM_adress_row_0+10);
+				LCD_SetDRAM_Adress(DDRAM_adress_row_1+4);
 				for(counter = 0 ; counter < DEFAULT_PERIOD_BUF_SIZE; counter++){
 					/*phase A */
 					LCD_SendChar(PeriodLCDPointer->PhaseA_FrequencyArray[counter]+0x30);
 				}
 				/*power factor data*/
-				LCD_SetDRAM_Adress(DDRAM_adress_row_1+6);
+				LCD_SetDRAM_Adress(DDRAM_adress_row_1+11);
 				for(counter = 0 ; counter < DEFAULT_POWER_FACTOR_BUF_SIZE; counter++){
 					/*phase A */
 					LCD_SendChar(PowerFactorLCDPointer->PhaseA_FactorArray[counter]+0x30);
@@ -249,22 +289,22 @@ void i2c_transfer(){
 			break;
 
 			case PHASE_B:
-				LCD_SetDRAM_Adress(0x01);
+				LCD_SetDRAM_Adress(DDRAM_adress_row_0);
 				LCD_SendChar('B');
 				/*voltage data*/
-				LCD_SetDRAM_Adress(DDRAM_adress_row_0+3);
+				LCD_SetDRAM_Adress(DDRAM_adress_row_0+7);
 				for(counter = 0 ; counter < DEFAULT_VOLTAGE_BUF_SIZE; counter++){
 					/*phase A */
 					LCD_SendChar(VoltageTextLCDPointer->PhaseB_VoltageArray[counter]+0x30);
 				}
 				/*frequency data*/
-				LCD_SetDRAM_Adress(DDRAM_adress_row_0+10);
+				LCD_SetDRAM_Adress(DDRAM_adress_row_1+4);
 				for(counter = 0 ; counter < DEFAULT_PERIOD_BUF_SIZE; counter++){
 					/*phase A */
 					LCD_SendChar(PeriodLCDPointer->PhaseB_FrequencyArray[counter]+0x30);
 				}
 				/*power factor data*/
-				LCD_SetDRAM_Adress(DDRAM_adress_row_1+6);
+				LCD_SetDRAM_Adress(DDRAM_adress_row_1+11);
 				for(counter = 0 ; counter < DEFAULT_POWER_FACTOR_BUF_SIZE; counter++){
 					/*phase A */
 					LCD_SendChar(PowerFactorLCDPointer->PhaseB_FactorArray[counter]+0x30);
@@ -273,22 +313,22 @@ void i2c_transfer(){
 			break;
 
 			case (PHASE_C -1):
-				LCD_SetDRAM_Adress(0x01);
+				LCD_SetDRAM_Adress(DDRAM_adress_row_0);
 				LCD_SendChar('C');
 				/*voltage data*/
-				LCD_SetDRAM_Adress(DDRAM_adress_row_0+3);
+				LCD_SetDRAM_Adress(DDRAM_adress_row_0+7);
 				for(counter = 0 ; counter < DEFAULT_VOLTAGE_BUF_SIZE; counter++){
 					/*phase A */
 					LCD_SendChar(VoltageTextLCDPointer->PhaseC_VoltageArray[counter]+0x30);
 				}
 				/*frequency data*/
-				LCD_SetDRAM_Adress(DDRAM_adress_row_0+10);
+				LCD_SetDRAM_Adress(DDRAM_adress_row_1+4);
 				for(counter = 0 ; counter < DEFAULT_PERIOD_BUF_SIZE; counter++){
 					/*phase A */
 					LCD_SendChar(PeriodLCDPointer->PhaseC_FrequencyArray[counter]+0x30);
 				}
 				/*power factor data*/
-				LCD_SetDRAM_Adress(DDRAM_adress_row_1+6);
+				LCD_SetDRAM_Adress(DDRAM_adress_row_1+11);
 				for(counter = 0 ; counter < DEFAULT_POWER_FACTOR_BUF_SIZE; counter++){
 					/*phase A */
 					LCD_SendChar(PowerFactorLCDPointer->PhaseC_FactorArray[counter]+0x30);

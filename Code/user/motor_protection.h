@@ -5,12 +5,6 @@
 #include "stm32f0xx_tim.h"
 #include "constants.h"
 
-#define GREEN_LED_ON	(GPIOC->BSRR |=GPIO_BSRR_BS_9)
-#define GREEN_LED_OFF	(GPIOC->BSRR |=GPIO_BSRR_BR_9)
-
-#define BLUE_LED_ON		(GPIOC->BSRR |=GPIO_BSRR_BS_8)
-#define BLUE_LED_OFF	(GPIOC->BSRR |=GPIO_BSRR_BR_8)
-
 #define DEFAULT_VOLTAGE_BUF_SIZE            3
 #define DEFAULT_PERIOD_BUF_SIZE             3
 #define DEFAULT_POWER_FACTOR_BUF_SIZE       3
@@ -29,19 +23,31 @@
 
 #define PHASEMETR_A_IRQ		(EXTI_IMR_MR1|EXTI_IMR_MR4)
 
-
 #define TIMER_MS    1000
 #define TIMER_US    100000UL
 
+/*schematic features*/
+
+#define GREEN_LED_ON	(GPIOC->BSRR |=GPIO_BSRR_BS_9)
+#define GREEN_LED_OFF	(GPIOC->BSRR |=GPIO_BSRR_BR_9)
+
+#define BLUE_LED_ON		(GPIOC->BSRR |=GPIO_BSRR_BS_8)
+#define BLUE_LED_OFF	(GPIOC->BSRR |=GPIO_BSRR_BR_8)
+
 #define DIODE_DROP	510
+#define VOLTAGE_PREDIV	2
 
 #pragma pack(push,1)
 typedef struct{
 
-    uint32_t PhaseA_Voltage;
-    uint32_t PhaseB_Voltage;
-    uint32_t PhaseC_Voltage;
+    uint32_t PhaseA_Voltage_rms;
+    uint32_t PhaseB_Voltage_rms;
+    uint32_t PhaseC_Voltage_rms;
 
+    uint32_t PhaseA_Voltage_peak;
+    uint32_t PhaseB_Voltage_peak;
+    uint32_t PhaseC_Voltage_peak;
+    
 } CapturedVoltage_REGISTR;
 #pragma pack(pop)
 

@@ -102,29 +102,18 @@ void LCD_SendChar(uint8_t CharToSend){
 
 void LCD_DrawWorkspace(){
 	
-	LCD_SetDRAM_Adress(0x02);
-	LCD_SendChar('=');
-	LCD_SetDRAM_Adress(0x06);
-	LCD_SendChar('v');
-	LCD_SetDRAM_Adress(0x08);
-	LCD_SendChar('T');
-	LCD_SendChar('=');
-	LCD_SetDRAM_Adress(0x0D);
-	LCD_SendChar('H');
-	LCD_SendChar('z');
-	LCD_SetDRAM_Adress(0x41);
-	LCD_SendChar('c');
-	LCD_SendChar('o');
+	LCD_SetDRAM_Adress(DDRAM_adress_row_0+2);
+	LCD_SendChar('V');
+	LCD_SendChar('r');
+	LCD_SendChar('m');
 	LCD_SendChar('s');
-	LCD_SendChar('f');
 	LCD_SendChar('=');
-}
+	LCD_SetDRAM_Adress(DDRAM_adress_row_1 +2);
+	LCD_SendChar('F');
+	LCD_SendChar('=');
+	LCD_SetDRAM_Adress(DDRAM_adress_row_1 +8);
+	LCD_SendChar('K');
+	LCD_SendChar('m');
+	LCD_SendChar('=');
 
-void LCD_DrawBootWindow(){
-
-	LCD_SetDRAM_Adress(0x05);
-	LCD_SendChar('B');
-	LCD_SendChar('O');
-	LCD_SendChar('O');
-	LCD_SendChar('T');
 }
