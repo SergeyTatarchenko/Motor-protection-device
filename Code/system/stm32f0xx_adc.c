@@ -31,5 +31,5 @@ int ADC_CalcValue(uint32_t data){
 		if ((temp < 0)||(temp>ADC_Ref)){
 			temp = 0;
 		}
-		return temp/10;
+		return temp;
 }

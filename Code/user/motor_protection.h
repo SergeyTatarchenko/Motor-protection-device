@@ -33,6 +33,8 @@
 #define TIMER_MS    1000
 #define TIMER_US    100000UL
 
+#define DIODE_DROP	510
+
 #pragma pack(push,1)
 typedef struct{
 

@@ -174,9 +174,19 @@ void frequency_conversion(){
 }
 
 void adc_conversion(){
-	
+	float temp;
 	/*get ADC value in mV*/
 	CapturedVoltagePointer->PhaseA_Voltage = ADC_CalcValue(CapturedVoltageArray[0]);
+	if(CapturedVoltagePointer->PhaseA_Voltage > 200){
+		CapturedVoltagePointer->PhaseA_Voltage += (uint32_t)DIODE_DROP;
+		CapturedVoltagePointer->PhaseA_Voltage *= 2;
+		temp = (float)CapturedVoltagePointer->PhaseA_Voltage;
+		temp = temp * 0.707;
+		CapturedVoltagePointer->PhaseA_Voltage = ((uint32_t)temp/10);
+	}else{
+		CapturedVoltagePointer->PhaseA_Voltage = 0;
+	}
+	
 	CapturedVoltagePointer->PhaseB_Voltage = ADC_CalcValue(CapturedVoltageArray[1]);
 	CapturedVoltagePointer->PhaseC_Voltage = ADC_CalcValue(CapturedVoltageArray[2]);
 	
