@@ -37,9 +37,20 @@ void EXTI_Init(){
 }
 
 void NVIC_Init(){	
-	//NVIC_SetPriority (EXTI0_1_IRQn, 4);
+	
+	NVIC_SetPriority (EXTI0_1_IRQn,5);
+	NVIC_SetPriority (EXTI2_3_IRQn,5);
+	NVIC_SetPriority (EXTI4_15_IRQn,5);
+		
 	/*enable global interrupt*/
 	__enable_irq ();
+}
+
+void DisableEXTI_Interupts(){
+
+	NVIC_DisableIRQ(EXTI0_1_IRQn);	
+	NVIC_DisableIRQ(EXTI2_3_IRQn);
+	NVIC_DisableIRQ(EXTI4_15_IRQn);
 }
 
 /*EXTI line 0 and 1 interrupt handler*/

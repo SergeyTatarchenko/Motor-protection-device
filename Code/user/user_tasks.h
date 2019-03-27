@@ -25,11 +25,18 @@ void check_state_TASK(void *pvParameters);
 void error_handler_TASK(void *pvParameters);
 /*----------------------*/	
 void SysInit(void);
+/*----------------------*/
 void frequency_conversion(void);
 void adc_conversion(void);
 void power_factor_conversion(void);
 void phase_rotation_conversion(void);
 
+
+/*----------------------
+отображение на дисплее (demo)	
+----------------------*/
 void i2c_transfer(void);
 void text_ascii_conversion(void);
+
+
 #endif

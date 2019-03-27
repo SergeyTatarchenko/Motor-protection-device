@@ -72,7 +72,12 @@ void main_TASK(void *pvParameters){
 		
 		frequency_conversion();
 		
+		
+		
 		CheckPowerNetwork();
+		
+		/*not tested*/
+		//power_factor_conversion();
 		/*working part*/
 		text_ascii_conversion();
 		/*i2c transmit to LCD*/
@@ -233,10 +238,47 @@ void adc_conversion(){
 }
 void power_factor_conversion(){
 	
-	/*calc power factor value*/
-	PowerFactorPointer->PhaseA_Cos = CalcPowerFactor(PowerFactorPointer->PhaseA_Factor,20);
+	/*получение значения Km с каждой фазы*/
+	DisableEXTI_Interupts();
+	
+	
+	/*phase A*/
+	EXTI->IMR |= PHASEMETER_A_IRQ;
+	NVIC_EnableIRQ(EXTI0_1_IRQn);
+	NVIC_EnableIRQ(EXTI2_3_IRQn);
+	/*wait for conversion*/
+	vTaskDelay(25);
+	/*add check Km function*/
+	
+	PowerFactorPointer->PhaseA_Cos = CalcPowerFactor(PowerFactorPointer->PhaseA_Factor,CapturedPeriodPointer->PhaseA_Period);
+	/*---------------------*/
+	DisableEXTI_Interupts();
+	EXTI->IMR &= ~PHASEMETER_A_IRQ;
+	
+	/*phase B*/
+	EXTI->IMR |= PHASEMETER_B_IRQ;
+	NVIC_EnableIRQ(EXTI2_3_IRQn);
+	NVIC_EnableIRQ(EXTI4_15_IRQn);
+	/*wait for conversion*/
+	vTaskDelay(25);
+	/*add check Km function*/
+	
 	PowerFactorPointer->PhaseB_Cos = CalcPowerFactor(PowerFactorPointer->PhaseB_Factor,CapturedPeriodPointer->PhaseB_Period);
+	/*---------------------*/
+	DisableEXTI_Interupts();
+	EXTI->IMR &= ~PHASEMETER_B_IRQ;
+	
+	/*phase B*/
+	EXTI->IMR |= PHASEMETER_C_IRQ;
+	NVIC_EnableIRQ(EXTI4_15_IRQn);
+	/*wait for conversion*/
+	vTaskDelay(25);
+	/*add check Km function*/
+	
 	PowerFactorPointer->PhaseC_Cos = CalcPowerFactor(PowerFactorPointer->PhaseC_Factor,CapturedPeriodPointer->PhaseC_Period);
+	/*---------------------*/
+	DisableEXTI_Interupts();
+	EXTI->IMR &= ~PHASEMETER_C_IRQ;
 }
 
 /*create text arrays for lcd*/
