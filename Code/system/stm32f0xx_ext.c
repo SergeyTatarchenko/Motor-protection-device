@@ -45,6 +45,12 @@ void NVIC_Init(){
 	/*enable global interrupt*/
 	__enable_irq ();
 }
+void EnableEXTI_Interupts(void){
+	
+	NVIC_EnableIRQ(EXTI0_1_IRQn);	
+	NVIC_EnableIRQ(EXTI2_3_IRQn);
+	NVIC_EnableIRQ(EXTI4_15_IRQn);
+}
 
 void DisableEXTI_Interupts(){
 
@@ -67,13 +73,10 @@ void EXTI0_1_IRQHandler(){
 		}else{
 			ContentSwitching = 1;
 		}
-		
 		/*reset interrupt trigger*/
 		EXTI->PR |= EXTI_PR_PR0;
 	}
-	
 	/*start measuring the phase shift for phase A and stop for measuring phase B */
-	
 	/*interrupt on PC1 */
 	if(EXTI->PR & EXTI_PR_PR1){			
 		/*start timer for fhase A shift*/

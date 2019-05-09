@@ -69,11 +69,7 @@ void main_TASK(void *pvParameters){
 	for(;;){
 		
 		adc_conversion();
-		
 		frequency_conversion();
-		
-		
-		
 		CheckPowerNetwork();
 		
 		/*not tested*/
@@ -125,6 +121,8 @@ void SysInit(){
 	MotorConfiguration.MaxPhasefrequency = (uint16_t)DEFAULT_FREQUENCY_MAX;
 	
 	Init_LCD_1602();
+	
+	EnableEXTI_Interupts();
 }
 
 void frequency_conversion(){
@@ -238,47 +236,32 @@ void adc_conversion(){
 }
 void power_factor_conversion(){
 	
+	EXTI->IMR &= PHASEMETER_DEFAULT;
 	/*получение значения Km с каждой фазы*/
-	DisableEXTI_Interupts();
-	
 	
 	/*phase A*/
 	EXTI->IMR |= PHASEMETER_A_IRQ;
-	NVIC_EnableIRQ(EXTI0_1_IRQn);
-	NVIC_EnableIRQ(EXTI2_3_IRQn);
 	/*wait for conversion*/
 	vTaskDelay(25);
-	/*add check Km function*/
-	
-	PowerFactorPointer->PhaseA_Cos = CalcPowerFactor(PowerFactorPointer->PhaseA_Factor,CapturedPeriodPointer->PhaseA_Period);
-	/*---------------------*/
-	DisableEXTI_Interupts();
 	EXTI->IMR &= ~PHASEMETER_A_IRQ;
-	
+	/*add check Km function*/
+	PowerFactorPointer->PhaseA_Cos = CalcPowerFactor(PowerFactorPointer->PhaseA_Factor,CapturedPeriodPointer->PhaseA_Period);
+	/*---------------------*/	
 	/*phase B*/
 	EXTI->IMR |= PHASEMETER_B_IRQ;
-	NVIC_EnableIRQ(EXTI2_3_IRQn);
-	NVIC_EnableIRQ(EXTI4_15_IRQn);
 	/*wait for conversion*/
-	vTaskDelay(25);
-	/*add check Km function*/
-	
+	vTaskDelay(25);	
+	EXTI->IMR &= ~PHASEMETER_B_IRQ;
 	PowerFactorPointer->PhaseB_Cos = CalcPowerFactor(PowerFactorPointer->PhaseB_Factor,CapturedPeriodPointer->PhaseB_Period);
 	/*---------------------*/
-	DisableEXTI_Interupts();
-	EXTI->IMR &= ~PHASEMETER_B_IRQ;
-	
-	/*phase B*/
+	/*phase C*/
 	EXTI->IMR |= PHASEMETER_C_IRQ;
-	NVIC_EnableIRQ(EXTI4_15_IRQn);
 	/*wait for conversion*/
 	vTaskDelay(25);
-	/*add check Km function*/
-	
+	EXTI->IMR &= ~PHASEMETER_C_IRQ;
 	PowerFactorPointer->PhaseC_Cos = CalcPowerFactor(PowerFactorPointer->PhaseC_Factor,CapturedPeriodPointer->PhaseC_Period);
 	/*---------------------*/
-	DisableEXTI_Interupts();
-	EXTI->IMR &= ~PHASEMETER_C_IRQ;
+	EXTI->IMR &= PHASEMETER_DEFAULT;
 }
 
 /*create text arrays for lcd*/

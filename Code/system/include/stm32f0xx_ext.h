@@ -9,4 +9,5 @@
 extern void EXTI_Init(void);
 extern void NVIC_Init(void);
 extern void DisableEXTI_Interupts(void);
+extern void EnableEXTI_Interupts(void);
 #endif
