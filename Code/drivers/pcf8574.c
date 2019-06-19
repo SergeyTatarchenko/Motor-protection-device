@@ -100,18 +100,26 @@ void LCD_SendChar(uint8_t CharToSend){
 	DELAY(2);
 }
 
+void LCD_Write(uint8_t *array){
+	int i = 0,line_size = 40;
+	while((array[i]!='\r') || (array[i]!= 0) || (i< line_size)){
+		LCD_SendChar(array[i]);
+		i++;
+	}
+}
+
 void LCD_DrawWorkspace(){
 	
-	LCD_SetDRAM_Adress(DDRAM_adress_row_0+2);
+	LCD_SetDRAM_Adress(DDRAM_adress_row_0 + 2);
 	LCD_SendChar('V');
 	LCD_SendChar('r');
 	LCD_SendChar('m');
 	LCD_SendChar('s');
 	LCD_SendChar('=');
-	LCD_SetDRAM_Adress(DDRAM_adress_row_1 +2);
+	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 2);
 	LCD_SendChar('F');
 	LCD_SendChar('=');
-	LCD_SetDRAM_Adress(DDRAM_adress_row_1 +8);
+	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 8);
 	LCD_SendChar('K');
 	LCD_SendChar('m');
 	LCD_SendChar('=');

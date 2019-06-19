@@ -8,62 +8,18 @@
 
 uint32_t ContentSwitching = 1;
 
-/*semaphore for error handler*/
-xSemaphoreHandle xErrorHandler;
-
-/*mutex for I2C , perform correct transmit */
-xSemaphoreHandle xMutex_BUS_BUSY;
-
-void check_state_TASK(void *pvParameters){
-
-	
-	uint_least8_t PowerNetworkStatus;
-	/*all peripherals init*/
-	SysInit();
-	ADC_on;
-	vTaskDelay(1000);
-	
-	/*add check network state function */
-	PowerNetworkStatus = CheckPowerNetwork();
-	
-	if(!PowerNetworkStatus){
-		
-		xErrorHandler = xSemaphoreCreateBinary();
-		xMutex_BUS_BUSY = xSemaphoreCreateMutex();
-
-		if((xErrorHandler != NULL) && (xMutex_BUS_BUSY != NULL) ){
-			
-			LCD_DrawWorkspace();
-			
-			xTaskCreate(&error_handler_TASK,"error handler",configMINIMAL_STACK_SIZE, NULL, 4 , NULL );
-			xTaskCreate(&main_TASK,"main cycle",configMINIMAL_STACK_SIZE, NULL, 3 , NULL );
-			
-			/*user button interrupt enable (for demo)*/
-			NVIC_EnableIRQ(EXTI0_1_IRQn);
-		
-		}else{
-			/*internal cicruit error*/
-		}	
-	}else{
-		/*add error number return function */
-	}
-		
-	vTaskDelete(NULL);
-
-}
 
 void error_handler_TASK(void *pvParameters){
 	
-	for(;;){
-		
+	for(;;){	
 		/*error waiting*/
 		xSemaphoreTake(xErrorHandler,portMAX_DELAY);
 		/*add error number return function */
 		BLUE_LED_ON;
 		while(1);
-	}	
-		
+	}		
 }
+
 void main_TASK(void *pvParameters){
 	
 	for(;;){
@@ -76,6 +32,7 @@ void main_TASK(void *pvParameters){
 		//power_factor_conversion();
 		/*working part*/
 		text_ascii_conversion();
+		
 		/*i2c transmit to LCD*/
 		xSemaphoreTake(xMutex_BUS_BUSY,portMAX_DELAY);
 		i2c_transfer();
@@ -121,8 +78,6 @@ void SysInit(){
 	MotorConfiguration.MaxPhasefrequency = (uint16_t)DEFAULT_FREQUENCY_MAX;
 	
 	Init_LCD_1602();
-	
-	EnableEXTI_Interupts();
 }
 
 void frequency_conversion(){

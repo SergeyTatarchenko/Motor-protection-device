@@ -50,10 +50,10 @@ uint_least8_t CheckPowerNetwork(void){
 	
 	
 	ErrorArray.phase_failure_error = freq_watchdog(WatchDogPointer);
-	/*проверка на обрыв фаз,чувствительность задается программно*/
 	
+	/*проверка на обрыв фаз,чувствительность задается программно*/
 	if(ErrorArray.phase_failure_error == PHASE_A ){
-		
+		/*demo*/
 		BLUE_LED_ON;
 	}else{
 		BLUE_LED_OFF;
@@ -62,6 +62,7 @@ uint_least8_t CheckPowerNetwork(void){
 	/*контроль частоты сети, чувствительность задается программно*/
 	if((CapturedPeriodPointer->PhaseA_Frequency > MotorConfigurationPointer->MaxPhasefrequency)||
 	   (CapturedPeriodPointer->PhaseA_Frequency < MotorConfigurationPointer->MinPhasefrequency)){   
+		/*demo*/
 		GREEN_LED_ON;
 	}else{
 		GREEN_LED_OFF;

@@ -31,7 +31,10 @@ void adc_conversion(void);
 void power_factor_conversion(void);
 void phase_rotation_conversion(void);
 
-
+/*semaphore for error handler*/
+extern xSemaphoreHandle xErrorHandler;
+/*mutex for I2C , perform correct transmit */
+extern xSemaphoreHandle xMutex_BUS_BUSY;
 /*----------------------
 отображение на дисплее (demo)	
 ----------------------*/
