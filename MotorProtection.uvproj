@@ -10,7 +10,7 @@
       <TargetName>DEMO</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060528::V5.06 update 5 (build 528)::ARMCC</pCCUsed>
+      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -125,7 +125,7 @@
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
           <Simulator>
-            <UseSimulator>0</UseSimulator>
+            <UseSimulator>1</UseSimulator>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -137,7 +137,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
-            <UseTarget>1</UseTarget>
+            <UseTarget>0</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -223,6 +223,7 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -363,6 +364,7 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
+            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>1</v6Lang>
             <v6LangP>1</v6LangP>
@@ -375,7 +377,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\FreeRTOS\include;.\Code\Drivers;.\Code\system\include;.\Code\user</IncludePath>
+              <IncludePath>.\FreeRTOS\include;.\Code\Drivers;.\Code\system\include;.\Code\user;..\SOM\OBJ_MODEL</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -514,6 +516,11 @@
               <FileType>1</FileType>
               <FilePath>.\Code\system\stm32f0xx_ext.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f0xx_serial.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\system\stm32f0xx_serial.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -543,6 +550,31 @@
               <FileName>constants.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Code\user\constants.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>SOM</GroupName>
+          <Files>
+            <File>
+              <FileName>obj_model_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\SOM\OBJ_MODEL\obj_model_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>OBJ_MODEL.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\SOM\OBJ_MODEL\OBJ_MODEL.h</FilePath>
+            </File>
+            <File>
+              <FileName>OBJ_MODEL.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOM\OBJ_MODEL\OBJ_MODEL.c</FilePath>
+            </File>
+            <File>
+              <FileName>DEFAULT.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\SOM\OBJ_MODEL\DEFAULT.h</FilePath>
             </File>
           </Files>
         </Group>

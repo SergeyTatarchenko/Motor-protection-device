@@ -6,6 +6,10 @@
 #include "stm32f0xx_dma.h"
 #include "stm32f0xx_ext.h"
 
+/*-------------------------*/
+#include "OBJ_MODEL.h"
+#include "obj_model_config.h"
+/*-------------------------*/
 uint32_t ContentSwitching = 1;
 
 
@@ -21,7 +25,7 @@ void error_handler_TASK(void *pvParameters){
 }
 
 void main_TASK(void *pvParameters){
-	
+	OBJ_Init();
 	for(;;){
 		
 		adc_conversion();
@@ -52,6 +56,7 @@ void SysInit(){
 	
 	I2CInit();
 	ADC_Init();
+	usart_init();
 	GeneralTimerConfig();
 	DMA_InitTIM15();
 	DMA_InitTIM16();

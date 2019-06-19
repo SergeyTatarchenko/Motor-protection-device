@@ -27,7 +27,6 @@ void Init_(){
 	/*all peripherals init*/
 	SysInit();
 	ADC_on;
-	
 	xErrorHandler = xSemaphoreCreateBinary();
 	xMutex_BUS_BUSY = xSemaphoreCreateMutex();
 
