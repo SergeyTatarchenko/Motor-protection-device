@@ -25,7 +25,11 @@ void error_handler_TASK(void *pvParameters){
 }
 
 void main_TASK(void *pvParameters){
-	OBJ_Init();
+		
+		Init_LCD_1602();
+		LCD_DrawWorkspace();
+		OBJ_Init();
+		ADC_on;
 	for(;;){
 		
 		adc_conversion();
@@ -33,14 +37,14 @@ void main_TASK(void *pvParameters){
 		CheckPowerNetwork();
 		
 		/*not tested*/
-		//power_factor_conversion();
+	//	power_factor_conversion();
 		/*working part*/
 		text_ascii_conversion();
 		
 		/*i2c transmit to LCD*/
 		xSemaphoreTake(xMutex_BUS_BUSY,portMAX_DELAY);
 		i2c_transfer();
-		xSemaphoreGive(xMutex_BUS_BUSY);
+	  xSemaphoreGive(xMutex_BUS_BUSY);
 		
 		vTaskDelay(100);
 	}
@@ -82,7 +86,6 @@ void SysInit(){
 	MotorConfiguration.MinPhasefrequency = (uint16_t)DEFAULT_FREQUENCY_MIN;
 	MotorConfiguration.MaxPhasefrequency = (uint16_t)DEFAULT_FREQUENCY_MAX;
 	
-	Init_LCD_1602();
 }
 
 void frequency_conversion(){

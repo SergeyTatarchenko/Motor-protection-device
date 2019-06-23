@@ -109,7 +109,6 @@ void LCD_Write(uint8_t *array){
 }
 
 void LCD_DrawWorkspace(){
-	
 	LCD_SetDRAM_Adress(DDRAM_adress_row_0 + 2);
 	LCD_SendChar('V');
 	LCD_SendChar('r');
