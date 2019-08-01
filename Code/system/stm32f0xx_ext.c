@@ -76,7 +76,7 @@ void EXTI0_1_IRQHandler(){
 		/*reset interrupt trigger*/
 		EXTI->PR |= EXTI_PR_PR0;
 	}
-	/*start measuring the phase shift for phase A and stop for measuring phase B */
+	/*start measuring the phase shift for phase A */
 	/*interrupt on PC1 */
 	if(EXTI->PR & EXTI_PR_PR1){			
 		/*start timer for fhase A shift*/
@@ -94,11 +94,19 @@ void EXTI0_1_IRQHandler(){
 /*EXTI line 2 and 3 interrupt handler*/
 void  EXTI2_3_IRQHandler(){
 	static portBASE_TYPE xTaskWoken = pdFALSE;
-	/*start measuring the phase shift for phase B and stop for measuring phase C */
+	/*start measuring the phase shift for phase B*/
 
 	/*interrupt on PC2 */
 	if(EXTI->PR & EXTI_PR_PR2){
-				
+		
+		/*stop timer for fhase A shift*/
+		PHASEMETER_A_STOP;
+		if(PHASEMETER_A_VALUE > 0){
+			/*get value from timer in us*/
+			PowerFactorPointer->PhaseA_Factor = PHASEMETER_A_VALUE;
+			/*clear buffer*/
+			PHASEMETER_A_VALUE = 0;	
+		}
 		/*reset interrupt trigger*/
 		EXTI->PR |= EXTI_PR_PR2;
 	}
@@ -119,22 +127,11 @@ void  EXTI2_3_IRQHandler(){
 void EXTI4_15_IRQHandler(){
 	
 	static portBASE_TYPE xTaskWoken = pdFALSE;
-	/*start measuring the phase shift for phase C and stop for measuring phase A */
+	/*start and stop measuring the phase shift for phase C and stop for measuring phase B */
 
 	/*interrupt on PC4 */
 	if(EXTI->PR & EXTI_PR_PR4){
-
-		/*stop timer for fhase A shift*/
-		PHASEMETER_A_STOP;
 		
-		if(PHASEMETER_A_VALUE > 0){
-			/*get value from timer in us*/
-			PowerFactorPointer->PhaseA_Factor = PHASEMETER_A_VALUE;
-			/*clear buffer*/
-			PHASEMETER_A_VALUE = 0;	
-		}
-		
-		GPIOC->BSRR |= GPIO_BSRR_BS_9;
 		/*reset interrupt trigger*/
 		EXTI->PR |= EXTI_PR_PR4;
 	}
@@ -144,6 +141,13 @@ void EXTI4_15_IRQHandler(){
 		
 		/*reset interrupt trigger*/
 		EXTI->PR |= EXTI_PR_PR5;
+	}
+	
+	/*interrupt on PC6 */
+	if(EXTI->PR & EXTI_PR_PR5){
+		
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR6;
 	}
 
 	if(xTaskWoken == pdTRUE){

@@ -79,7 +79,7 @@ uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress){
 	return state;
 }
 
-void LCD_SendChar(uint8_t CharToSend){
+void LCD_SendChar(char CharToSend){
 	uint8_t temp;
 	/*vatiable for transmit */
 	uint8_t VoltageBuf[4] = {0x0D,0x09,0x0D,0x09};
@@ -100,7 +100,7 @@ void LCD_SendChar(uint8_t CharToSend){
 	DELAY(2);
 }
 
-void LCD_Write(uint8_t *array){
+void LCD_Write(char *array){
 	int i = 0,line_size = 40;
 	while((array[i]!='\r') || (array[i]!= 0) || (i< line_size)){
 		LCD_SendChar(array[i]);

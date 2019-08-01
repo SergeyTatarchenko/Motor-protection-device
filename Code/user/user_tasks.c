@@ -6,10 +6,6 @@
 #include "stm32f0xx_dma.h"
 #include "stm32f0xx_ext.h"
 
-/*-------------------------*/
-#include "OBJ_MODEL.h"
-#include "obj_model_config.h"
-/*-------------------------*/
 uint32_t ContentSwitching = 1;
 
 
@@ -28,28 +24,43 @@ void main_TASK(void *pvParameters){
 		
 		Init_LCD_1602();
 		LCD_DrawWorkspace();
-		OBJ_Init();
 		ADC_on;
+
 	for(;;){
 		
 		adc_conversion();
 		frequency_conversion();
+		/*not tested*/
+		//	power_factor_conversion();
+		
+		
 		CheckPowerNetwork();
 		
-		/*not tested*/
-	//	power_factor_conversion();
 		/*working part*/
 		text_ascii_conversion();
 		
 		/*i2c transmit to LCD*/
 		xSemaphoreTake(xMutex_BUS_BUSY,portMAX_DELAY);
 		i2c_transfer();
-	  xSemaphoreGive(xMutex_BUS_BUSY);
+		xSemaphoreGive(xMutex_BUS_BUSY);
 		
 		vTaskDelay(100);
 	}
 }
 
+void i2c_transfer_TASK(void *pvParameters)
+{
+	for(;;)
+	{
+		/*working part*/
+		text_ascii_conversion();
+		/*i2c transmit to LCD*/
+		xSemaphoreTake(xMutex_BUS_BUSY,portMAX_DELAY);
+		i2c_transfer();
+		xSemaphoreGive(xMutex_BUS_BUSY);
+		vTaskDelay(100);
+	}
+}
 
 void SysInit(){
 	

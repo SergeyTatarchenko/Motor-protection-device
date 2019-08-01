@@ -30,8 +30,8 @@
 extern uint_least8_t Init_LCD_1602(void);
 extern uint_least8_t LCD_Reset(void);
 extern uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress);
-extern void LCD_SendChar(uint8_t CharToSend);
-extern void LCD_Write(uint8_t *array);
+extern void LCD_SendChar(char CharToSend);
+extern void LCD_Write(char *array);
 
 extern uint_least8_t LCD_ClearDisplay(void);
 

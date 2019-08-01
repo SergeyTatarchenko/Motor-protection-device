@@ -16,13 +16,16 @@
 #include "pcf8574.h"
 #include "motor_protection.h"
 /*----------------------*/
+#define TRUE	1
+#define FALSE	0
+/*----------------------*/
 extern uint32_t ContentSwitching;
 /*----------------------*/
 
 /*3 level peiority*/
 void main_TASK(void *pvParameters);
+void i2c_transfer_TASK(void *pvParameters);
 /*4 level peiority*/
-void check_state_TASK(void *pvParameters);
 void error_handler_TASK(void *pvParameters);
 /*----------------------*/	
 void SysInit(void);
