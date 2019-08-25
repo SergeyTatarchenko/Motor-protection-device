@@ -98,7 +98,7 @@ uint16_t CalcPowerFactor(uint16_t shift, uint32_t period){
 
 	uint16_t cosine;
 	if((period>0) && (shift>0)){
-		cosine = ((uint32_t)shift*180)/((uint32_t)period);	
+		cosine = ((uint32_t)shift*360)/((uint32_t)period);	
 	}else{
 		cosine = 0;
 	}

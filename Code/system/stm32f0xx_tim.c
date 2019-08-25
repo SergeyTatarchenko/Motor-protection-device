@@ -71,9 +71,9 @@ void GeneralTimerConfig(){
 	
 	
 	/*TIM3/6/14 used to implement a phase meter*/
-	TIM3->PSC = TIMER_PSC_2;
-	TIM6->PSC = TIMER_PSC_2;
-	TIM14->PSC= TIMER_PSC_2;
+	TIM3->PSC = TIMER_PSC_1;
+	TIM6->PSC = TIMER_PSC_1;
+	TIM14->PSC= TIMER_PSC_1;
 	
 }
 

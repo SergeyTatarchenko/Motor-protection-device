@@ -25,16 +25,16 @@ void main_TASK(void *pvParameters){
 		Init_LCD_1602();
 		LCD_DrawWorkspace();
 		ADC_on;
-
+		EnableEXTI_Interupts();
 	for(;;){
 		
 		adc_conversion();
 		frequency_conversion();
 		/*not tested*/
-		//	power_factor_conversion();
+		power_factor_conversion();
 		
 		
-		CheckPowerNetwork();
+	//	CheckPowerNetwork();
 		
 		/*working part*/
 		text_ascii_conversion();
@@ -219,22 +219,28 @@ void power_factor_conversion(){
 	vTaskDelay(25);
 	EXTI->IMR &= ~PHASEMETER_A_IRQ;
 	/*add check Km function*/
-	PowerFactorPointer->PhaseA_Cos = CalcPowerFactor(PowerFactorPointer->PhaseA_Factor,CapturedPeriodPointer->PhaseA_Period);
-	/*---------------------*/	
-	/*phase B*/
-	EXTI->IMR |= PHASEMETER_B_IRQ;
-	/*wait for conversion*/
-	vTaskDelay(25);	
-	EXTI->IMR &= ~PHASEMETER_B_IRQ;
-	PowerFactorPointer->PhaseB_Cos = CalcPowerFactor(PowerFactorPointer->PhaseB_Factor,CapturedPeriodPointer->PhaseB_Period);
-	/*---------------------*/
-	/*phase C*/
-	EXTI->IMR |= PHASEMETER_C_IRQ;
-	/*wait for conversion*/
-	vTaskDelay(25);
-	EXTI->IMR &= ~PHASEMETER_C_IRQ;
-	PowerFactorPointer->PhaseC_Cos = CalcPowerFactor(PowerFactorPointer->PhaseC_Factor,CapturedPeriodPointer->PhaseC_Period);
-	/*---------------------*/
+	//PowerFactorPointer->PhaseA_Cos = CalcPowerFactor(PowerFactorPointer->PhaseA_Factor,CapturedPeriodPointer->PhaseA_Period);
+	PowerFactorPointer->PhaseA_Cos = CalcPowerFactor(PowerFactorPointer->PhaseA_Factor,1818);
+	//PowerFactorPointer->PhaseA_Cos=45;
+	if(PowerFactorPointer->PhaseA_Factor>150)
+	{
+		BLUE_LED_ON;
+	}
+//	/*---------------------*/	
+//	/*phase B*/
+//	EXTI->IMR |= PHASEMETER_B_IRQ;
+//	/*wait for conversion*/
+//	vTaskDelay(25);	
+//	EXTI->IMR &= ~PHASEMETER_B_IRQ;
+//	PowerFactorPointer->PhaseB_Cos = CalcPowerFactor(PowerFactorPointer->PhaseB_Factor,CapturedPeriodPointer->PhaseB_Period);
+//	/*---------------------*/
+//	/*phase C*/
+//	EXTI->IMR |= PHASEMETER_C_IRQ;
+//	/*wait for conversion*/
+//	vTaskDelay(25);
+//	EXTI->IMR &= ~PHASEMETER_C_IRQ;
+//	PowerFactorPointer->PhaseC_Cos = CalcPowerFactor(PowerFactorPointer->PhaseC_Factor,CapturedPeriodPointer->PhaseC_Period);
+//	/*---------------------*/
 	EXTI->IMR &= PHASEMETER_DEFAULT;
 }
 
@@ -250,11 +256,11 @@ void text_ascii_conversion(){
 	itoa(CapturedPeriodPointer->PhaseA_Frequency,PeriodLCDPointer->PhaseA_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
 	itoa(CapturedPeriodPointer->PhaseB_Frequency,PeriodLCDPointer->PhaseB_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
 	itoa(CapturedPeriodPointer->PhaseC_Frequency,PeriodLCDPointer->PhaseC_FrequencyArray,DEFAULT_PERIOD_BUF_SIZE);
-//	
-//	/*convert power factor value*/
-//	itoa(PowerFactorPointer->PhaseA_Cos,PowerFactorLCDPointer->PhaseA_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
-//	itoa(PowerFactorPointer->PhaseB_Cos,PowerFactorLCDPointer->PhaseB_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
-//	itoa(PowerFactorPointer->PhaseC_Cos,PowerFactorLCDPointer->PhaseC_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
+	
+	/*convert power factor value*/
+	itoa(PowerFactorPointer->PhaseA_Cos,PowerFactorLCDPointer->PhaseA_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
+	itoa(PowerFactorPointer->PhaseB_Cos,PowerFactorLCDPointer->PhaseB_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
+	itoa(PowerFactorPointer->PhaseC_Cos,PowerFactorLCDPointer->PhaseC_FactorArray,DEFAULT_POWER_FACTOR_BUF_SIZE);
 }
 
 

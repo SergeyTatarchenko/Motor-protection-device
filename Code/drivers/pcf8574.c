@@ -101,26 +101,25 @@ void LCD_SendChar(char CharToSend){
 }
 
 void LCD_Write(char *array){
-	int i = 0,line_size = 40;
-	while((array[i]!='\r') || (array[i]!= 0) || (i< line_size)){
+	
+	int max_line_size = 40,array_size = sizeof(array);
+	
+	if(array_size > max_line_size){
+			return;
+		}
+	for(int i = 0;i < max_line_size;i++){
+		if(array[i] == '\0'){
+			break;
+		}
 		LCD_SendChar(array[i]);
-		i++;
 	}
 }
 
 void LCD_DrawWorkspace(){
 	LCD_SetDRAM_Adress(DDRAM_adress_row_0 + 2);
-	LCD_SendChar('V');
-	LCD_SendChar('r');
-	LCD_SendChar('m');
-	LCD_SendChar('s');
-	LCD_SendChar('=');
+	LCD_Write("Vrms=");
 	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 2);
-	LCD_SendChar('F');
-	LCD_SendChar('=');
+	LCD_Write("F=");
 	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 8);
-	LCD_SendChar('K');
-	LCD_SendChar('m');
-	LCD_SendChar('=');
-
+	LCD_Write("Km=");
 }

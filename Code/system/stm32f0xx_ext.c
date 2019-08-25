@@ -81,6 +81,7 @@ void EXTI0_1_IRQHandler(){
 	if(EXTI->PR & EXTI_PR_PR1){			
 		/*start timer for fhase A shift*/
 		PHASEMETER_A_START;
+		
 		/*reset interrupt trigger*/
 		EXTI->PR |= EXTI_PR_PR1;
 	}
