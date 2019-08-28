@@ -10,7 +10,7 @@
       <TargetName>DEMO</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060528::V5.06 update 5 (build 528)::ARMCC</pCCUsed>
+      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -125,7 +125,7 @@
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
           <Simulator>
-            <UseSimulator>1</UseSimulator>
+            <UseSimulator>0</UseSimulator>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -137,7 +137,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
-            <UseTarget>0</UseTarget>
+            <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -223,6 +223,7 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -363,6 +364,7 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
+            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>1</v6Lang>
             <v6LangP>1</v6LangP>
@@ -375,7 +377,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\FreeRTOS\include;.\Code\Drivers;.\Code\system\include;.\Code\user;.\Code\FreeRTOS\include</IncludePath>
+              <IncludePath>.\Code\Drivers;.\Code\system\include;.\Code\user;.\Code\FreeRTOS\include;.\Code\KEIL_only</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -455,11 +457,6 @@
               <FilePath>.\Code\system\system_stm32f0xx.c</FilePath>
             </File>
             <File>
-              <FileName>startup_stm32f030.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\Code\system\startup_stm32f030.s</FilePath>
-            </File>
-            <File>
               <FileName>stm32f0xx_ext.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Code\system\stm32f0xx_ext.c</FilePath>
@@ -468,6 +465,11 @@
               <FileName>stm32f0xx_serial.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Code\system\stm32f0xx_serial.c</FilePath>
+            </File>
+            <File>
+              <FileName>startup_stm32f030.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\Code\KEIL_only\startup_stm32f030.s</FilePath>
             </File>
           </Files>
         </Group>
@@ -525,11 +527,6 @@
               <FilePath>.\Code\FreeRTOS\list.c</FilePath>
             </File>
             <File>
-              <FileName>port.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Code\FreeRTOS\port.c</FilePath>
-            </File>
-            <File>
               <FileName>queue.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Code\FreeRTOS\queue.c</FilePath>
@@ -548,6 +545,11 @@
               <FileName>timers.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Code\FreeRTOS\timers.c</FilePath>
+            </File>
+            <File>
+              <FileName>port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\KEIL_only\port.c</FilePath>
             </File>
           </Files>
         </Group>
