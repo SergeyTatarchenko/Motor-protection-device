@@ -51,7 +51,7 @@ uint_least8_t CheckPowerNetwork(void){
 	
 	ErrorArray.phase_failure_error = freq_watchdog(WatchDogPointer);
 	
-	/*проверка на обрыв фаз,чувствительность задается программно*/
+	/*пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ,пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ*/
 	if(ErrorArray.phase_failure_error == PHASE_A ){
 		/*demo*/
 		BLUE_LED_ON;
@@ -59,7 +59,7 @@ uint_least8_t CheckPowerNetwork(void){
 		BLUE_LED_OFF;
 	}
 	
-	/*контроль частоты сети, чувствительность задается программно*/
+	/*пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ*/
 	if((CapturedPeriodPointer->PhaseA_Frequency > MotorConfigurationPointer->MaxPhasefrequency)||
 	   (CapturedPeriodPointer->PhaseA_Frequency < MotorConfigurationPointer->MinPhasefrequency)){   
 		/*demo*/
@@ -93,9 +93,20 @@ uint_least8_t freq_watchdog(WatchDog_REGISTR *pointer){
 	return error;
 }
 
-/*calculate power factor, return result in deg */
-uint16_t CalcPowerFactor(uint16_t shift, uint32_t period){
+/**/
+void CheckPhaseRotation(void)
+{
 
+}
+/**/
+void AngleShearConversion(void)
+{
+
+}
+
+/*calculate power factor, return result in deg */
+uint16_t CalcPowerFactor(uint16_t shift, uint32_t period)
+{
 	uint16_t cosine;
 	if((period>0) && (shift>0)){
 		cosine = ((uint32_t)shift*360)/((uint32_t)period);	
@@ -103,7 +114,6 @@ uint16_t CalcPowerFactor(uint16_t shift, uint32_t period){
 		cosine = 0;
 	}
 	return cosine;
-
 }
 
 /*convert integer to array*/

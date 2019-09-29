@@ -30,9 +30,10 @@ include := $(addprefix -I,$(include_path))
 CFLAGS += -mcpu=cortex-m0
 CFLAGS += -mlittle-endian
 CFLAGS += -mthumb
+CFLAGS += --data-sections
 CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
-#CFLAGS += -Os
+CFLAGS += -Os -O2
 CFLAGS += $(include)
 CFLAGS += -c
 #-------------------------------------------------------------------

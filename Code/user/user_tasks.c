@@ -211,7 +211,7 @@ void adc_conversion(){
 void power_factor_conversion(){
 	
 	EXTI->IMR &= PHASEMETER_DEFAULT;
-	/*получение значения Km с каждой фазы*/
+	/*пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Km пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ*/
 	
 	/*phase A*/
 	EXTI->IMR |= PHASEMETER_A_IRQ;

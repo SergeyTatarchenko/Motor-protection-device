@@ -23,7 +23,9 @@
 
 #define PHASEMETER_A_IRQ	(EXTI_IMR_MR1|EXTI_IMR_MR2)	
 #define PHASEMETER_B_IRQ	(EXTI_IMR_MR3|EXTI_IMR_MR4)	
-#define PHASEMETER_C_IRQ	(EXTI_IMR_MR5|EXTI_IMR_MR6)	
+#define PHASEMETER_C_IRQ	(EXTI_IMR_MR5|EXTI_IMR_MR6)
+
+#define PHROT_CHECK_IRQ     (EXTI_IMR_MR1|EXTI_IMR_MR3|EXTI_IMR_MR5)
 
 #define PHASEMETER_DEFAULT	(EXTI_IMR_MR0)
 
@@ -152,6 +154,16 @@ typedef struct{
 } ErrorArray_REGISTR;
 #pragma pack(pop)
 
+#pragma pack(push,1)
+typedef struct{
+	
+	uint16_t PhaseAngleAB;
+    uint16_t PhaseAngleBC;
+    uint16_t PhaseAngleAC;
+	
+} PhaseAngle_REGISTR;
+#pragma pack(pop)
+
 /*initial configuration*/
 extern MotorConfiguration_REGISTR MotorConfiguration;
 extern MotorConfiguration_REGISTR *MotorConfigurationPointer;
@@ -186,6 +198,16 @@ extern PowerFactor_REGISTR *PowerFactorPointer;
 extern PowerFactorLCD_REGISTR PowerFactorLCD;
 extern PowerFactorLCD_REGISTR *PowerFactorLCDPointer;
 
+/*angle shear array*/
+extern PhaseAngle_REGISTR PhaseAngle;
+extern PhaseAngle_REGISTR *PhaseAnglePointer;
+
+/*current phase sequence*/
+extern char CurPhaseSeq[3];
+
+/*set phase sequence*/
+extern char SetPhaseSeq[3];
+
 /*ADC data from DMA transfer*/
 extern uint32_t CapturedVoltageArray[3];
 
@@ -195,10 +217,11 @@ extern uint32_t TIM16_CCR1_Array[2];
 extern uint32_t TIM17_CCR1_Array[2];
 
 /*-------------------------------------------*/
-
-extern uint32_t itoa(int i,uint8_t *buff, uint8_t MesSize);
-extern uint_least8_t CheckPowerNetwork(void);
-extern uint16_t CalcPowerFactor(uint16_t shift, uint32_t period);
-extern uint_least8_t freq_watchdog(WatchDog_REGISTR *pointer);
+ void CheckPhaseRotation(void);
+ void AngleShearConversion(void);
+ uint32_t itoa(int i,uint8_t *buff, uint8_t MesSize);
+ uint_least8_t CheckPowerNetwork(void);
+ uint16_t CalcPowerFactor(uint16_t shift, uint32_t period);
+ uint_least8_t freq_watchdog(WatchDog_REGISTR *pointer);
 #endif
 
