@@ -1,12 +1,12 @@
 #ifndef PCF8574_H
 #define PCF8574_H
 
+/*STM32F0 include i2c implementation*/
 #include "stm32f0xx_i2c.h"
-#include "motor_protection.h"
 /************************/
+/*delay implementation*/
 #include "FreeRTOS.h"
 #include "task.h"
-/*delay implementation*/
 #define DELAY   vTaskDelay
 /************************/
 

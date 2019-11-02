@@ -43,55 +43,127 @@ uint32_t TIM16_CCR1_Array[2];
 uint32_t TIM17_CCR1_Array[2];
 
 
-/*Check status of power network*/ 
-uint_least8_t CheckPowerNetwork(void){
+void PowerControl()
+{
 	
-	uint_least8_t status;
-	
-	
-	ErrorArray.phase_failure_error = freq_watchdog(WatchDogPointer);
-	
-	/*�������� �� ����� ���,���������������� �������� ����������*/
-	if(ErrorArray.phase_failure_error == PHASE_A ){
-		/*demo*/
-		BLUE_LED_ON;
-	}else{
-		BLUE_LED_OFF;
-	}
-	
-	/*�������� ������� ����, ���������������� �������� ����������*/
-	if((CapturedPeriodPointer->PhaseA_Frequency > MotorConfigurationPointer->MaxPhasefrequency)||
-	   (CapturedPeriodPointer->PhaseA_Frequency < MotorConfigurationPointer->MinPhasefrequency)){   
-		/*demo*/
-		GREEN_LED_ON;
-	}else{
-		GREEN_LED_OFF;
-	
-	}
-	status = 0;
-	return status;
- }
+}
 
-/*frequency watchdog, return frequency error number*/
- 
-uint_least8_t freq_watchdog(WatchDog_REGISTR *pointer){
+uint_least8_t power_factor_control(MotorConfiguration_REGISTR *configuration,PowerFactor_REGISTR *power_pointer)
+{
+	/*overload control*/
+	if(power_pointer->PhaseA_Cos > configuration-> MaxPowerFactor)
+	{
+		
+	}
+	/*disbalance control*/
 	
-	uint_least8_t error;
+}
 	
-	if (pointer->FrequencyPhaseA < FREQUENCY_SENSETIVITY ){
-		error = PHASE_A;
+/*phase imbalance control, return TRUE if phase imbalance exceeds setup value */
+uint_least8_t phase_imbalance_control(ErrorArray_REGISTR* error_pointer,MotorConfiguration_REGISTR *configuration,CapturedVoltage_REGISTR *voltage_pointer)
+{
+	uint_least8_t error = FALSE;
+	uint8_t phase_imb = 0;
+	uint32_t buf[3],max_val,min_val;
+	buf[0] = voltage_pointer->PhaseA_Voltage_peak;
+	buf[1] = voltage_pointer->PhaseB_Voltage_peak;
+	buf[2] = voltage_pointer->PhaseC_Voltage_peak;
+	max_val = buf[0],min_val = buf[0]; 
+	
+	/*max value*/
+	for(int i = 0;i <3;i++)
+	{
+		if(buf[i] > max_val)
+		{
+			max_val = buf[i];
+		}
 	}
-	else {
-		error = 0;
+	/*min value*/
+	for(int i = 0;i <3;i++)
+	{
+		if(buf[i] < min_val)
+		{
+			min_val = buf[i];
+		}
 	}
-	if(pointer->FrequencyPhaseB < FREQUENCY_SENSETIVITY ){
-	//	error = error |PHASE_B;
-	}
-	if(pointer->FrequencyPhaseC < FREQUENCY_SENSETIVITY){
-	//	error = error|PHASE_C;
+	phase_imb = (uint8_t)(((float)min_val/(float)max_val)*100);
+	if(phase_imb > configuration->PhaseImbalance)
+	{
+		error = TRUE;
 	}
 	return error;
 }
+
+ /*frequency control, return TRUE if frequency diverges from the set*/
+ uint_least8_t freq_control(CapturedPeriod_REGISTR *freq_pointer,ErrorArray_REGISTR* error_pointer,MotorConfiguration_REGISTR *configuration)
+{
+	uint_least8_t error = FALSE;
+	
+	if((freq_pointer->PhaseA_Frequency > (configuration->SetupFrequency + configuration->MaxFrequencyShift))||
+	   (freq_pointer->PhaseA_Frequency < (configuration->SetupFrequency - configuration->MaxFrequencyShift)))
+	{
+		error = TRUE;
+		error_pointer->frequency.bit.PhaseA = TRUE;
+	}
+	else{
+		error_pointer->frequency.bit.PhaseA = FALSE;
+	}
+	if((freq_pointer->PhaseB_Frequency > (configuration->SetupFrequency + configuration->MaxFrequencyShift))||
+	   (freq_pointer->PhaseB_Frequency < (configuration->SetupFrequency - configuration->MaxFrequencyShift)))
+	{
+		error = TRUE;
+		error_pointer->frequency.bit.PhaseB = TRUE;
+	}
+	else{
+		error_pointer->frequency.bit.PhaseB = FALSE;
+	}
+	if((freq_pointer->PhaseC_Frequency > (configuration->SetupFrequency + configuration->MaxFrequencyShift))||
+	   (freq_pointer->PhaseC_Frequency < (configuration->SetupFrequency - configuration->MaxFrequencyShift)))
+	{
+		error = TRUE;
+		error_pointer->frequency.bit.PhaseC = TRUE;
+	}
+	else{
+		error_pointer->frequency.bit.PhaseC = FALSE;
+	}
+	return error;
+}
+ 
+/*frequency watchdog,return TRUE if phase failure appears */
+uint_least8_t freq_watchdog(WatchDog_REGISTR *watchdog_pointer,ErrorArray_REGISTR* error_pointer)
+{
+	uint_least8_t error  = FALSE;
+
+	if(watchdog_pointer->FrequencyPhaseA == 0)
+	{
+		error = TRUE;
+		error_pointer->phase_failure.bit.PhaseA = TRUE;
+	}
+	else
+	{
+		error_pointer->phase_failure.bit.PhaseA = FALSE;
+	}
+	if(watchdog_pointer->FrequencyPhaseB == 0)
+	{
+		error = TRUE;
+		error_pointer->phase_failure.bit.PhaseB = TRUE;
+	}
+	else
+	{
+		error_pointer->phase_failure.bit.PhaseB = FALSE;
+	}
+	if(watchdog_pointer->FrequencyPhaseC == 0)
+	{
+		error = TRUE;
+		error_pointer->phase_failure.bit.PhaseC = TRUE;
+	}
+	else
+	{
+		error_pointer->phase_failure.bit.PhaseC = FALSE;
+	}
+	return error;
+}
+
 
 /**/
 void CheckPhaseRotation(void)
@@ -104,7 +176,7 @@ void AngleShearConversion(void)
 
 }
 
-/*calculate power factor, return result in deg */
+/*calculate power factor, return result in deg from tick */
 uint16_t CalcPowerFactor(uint16_t shift, uint32_t period)
 {
 	uint16_t cosine;

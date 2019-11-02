@@ -1,13 +1,15 @@
 #ifndef USER_TASKS_H
 #define USER_TASKS_H
 
+
+#define TRUE	1
+#define FALSE	0
 /*----------------------*/
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
 /*----------------------*/
-
 #include "stm32f0xx.h"
 #include "stm32f0xx_adc.h"
 #include "stm32f0xx_i2c.h"
@@ -15,9 +17,6 @@
 #include "stm32f0xx_serial.h"
 #include "pcf8574.h"
 #include "motor_protection.h"
-/*----------------------*/
-#define TRUE	1
-#define FALSE	0
 /*----------------------*/
 extern uint32_t ContentSwitching;
 /*----------------------*/

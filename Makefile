@@ -2,9 +2,9 @@
 # flexible makefile for stm32f0
 #	STM32F030R8_FLASH.ld
 #-------------------------------------------------------------------
-CC=/home/sergeytatarchenko/toolchain/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi-gcc
-LD=/home/sergeytatarchenko/toolchain/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi-gcc
-CP=/home/sergeytatarchenko/toolchain/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi-objcopy
+CC=/home/sergey/toolchain/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi-gcc
+LD=/home/sergey/toolchain/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi-gcc
+CP=/home/sergey/toolchain/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi-objcopy
 #-------------------------------------------------------------------
 source_dirs:= Code/FreeRTOS Code/drivers Code/system Code/user Code/GCC_only     
 include_path:= Code/drivers Code/system/include Code/FreeRTOS/include Code/user Code/GCC_only   
@@ -33,7 +33,7 @@ CFLAGS += -mthumb
 CFLAGS += --data-sections
 CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
-CFLAGS += -Os -O2
+#CFLAGS += -Os -O2
 CFLAGS += $(include)
 CFLAGS += -c
 #-------------------------------------------------------------------

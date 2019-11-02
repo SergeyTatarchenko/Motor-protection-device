@@ -30,7 +30,10 @@
 #define PHASEMETER_DEFAULT	(EXTI_IMR_MR0)
 
 #define TIMER_MS    1000
-#define TIMER_US    100000UL
+#define TIMER_10US  100000UL
+
+#define TRUE	1
+#define FALSE	0
 
 /*schematic features*/
 
@@ -124,10 +127,12 @@ typedef struct{
 #pragma pack(push,1)
 typedef struct{
 
-    uint16_t MinPhaseVoltage;
-    uint16_t MaxPhaseVoltage;
-    uint16_t MinPhasefrequency;
-    uint16_t MaxPhasefrequency;
+    uint8_t MaxPowerFactor;
+	uint8_t MinPowerFactor;
+	uint8_t PhaseImbalance;
+	uint16_t MaxFrequencyShift;
+	uint16_t SetupFrequency;
+	
 
 } MotorConfiguration_REGISTR;
 #pragma pack(pop)
@@ -144,24 +149,52 @@ typedef struct{
 
 #pragma pack(push,1)
 typedef struct{
-	
-	uint8_t frequency_error;
-	uint8_t phase_shift_error;
-	uint8_t phase_imbalance_error;
-	uint8_t power_factor_error;
-	uint8_t phase_failure_error;
-	
+	/*frequency error*/
+	union{
+		uint8_t byte;
+		struct{
+			unsigned PhaseA:1;
+			unsigned PhaseB:1;
+			unsigned PhaseC:1;
+		}bit;	
+	}frequency;
+	/*phase shift error*/
+	union {
+		uint8_t byte;
+		struct{
+			unsigned PhaseA:1;
+			unsigned PhaseB:1;
+			unsigned PhaseC:1;
+		}bit;
+	}phase_shift;
+	/*phase imbalance* error*/
+	union{
+		uint8_t byte;
+		struct{
+			unsigned PhaseA:1;
+			unsigned PhaseB:1;
+			unsigned PhaseC:1;
+		}bit;
+	}phase_imbalance;
+	/*power factor error*/
+	union{
+		uint8_t byte;
+		struct{
+			unsigned PhaseA:1;
+			unsigned PhaseB:1;
+			unsigned PhaseC:1;
+		}bit;		
+	}power_factor;
+	/*phase failure error*/
+	union{
+		uint8_t byte;
+		struct{
+			unsigned PhaseA:1;
+			unsigned PhaseB:1;
+			unsigned PhaseC:1;
+		}bit;		
+	}phase_failure;	
 } ErrorArray_REGISTR;
-#pragma pack(pop)
-
-#pragma pack(push,1)
-typedef struct{
-	
-	uint16_t PhaseAngleAB;
-    uint16_t PhaseAngleBC;
-    uint16_t PhaseAngleAC;
-	
-} PhaseAngle_REGISTR;
 #pragma pack(pop)
 
 /*initial configuration*/
@@ -198,10 +231,6 @@ extern PowerFactor_REGISTR *PowerFactorPointer;
 extern PowerFactorLCD_REGISTR PowerFactorLCD;
 extern PowerFactorLCD_REGISTR *PowerFactorLCDPointer;
 
-/*angle shear array*/
-extern PhaseAngle_REGISTR PhaseAngle;
-extern PhaseAngle_REGISTR *PhaseAnglePointer;
-
 /*current phase sequence*/
 extern char CurPhaseSeq[3];
 
@@ -222,6 +251,12 @@ extern uint32_t TIM17_CCR1_Array[2];
  uint32_t itoa(int i,uint8_t *buff, uint8_t MesSize);
  uint_least8_t CheckPowerNetwork(void);
  uint16_t CalcPowerFactor(uint16_t shift, uint32_t period);
- uint_least8_t freq_watchdog(WatchDog_REGISTR *pointer);
+ 
+ /*phase imbalance control, return TRUE if phase imbalance exceeds setup value */
+uint_least8_t phase_imbalance_control(ErrorArray_REGISTR* error_pointer,MotorConfiguration_REGISTR *configuration,CapturedVoltage_REGISTR *voltage_pointer);
+ /*frequency control, return TRUE if frequency diverges from the set*/
+ uint_least8_t freq_control(CapturedPeriod_REGISTR *freq_pointer,ErrorArray_REGISTR* error_pointer,MotorConfiguration_REGISTR *configuration);
+/*phase failure control*/
+uint_least8_t freq_watchdog(WatchDog_REGISTR *watchdog_pointer,ErrorArray_REGISTR* error_pointer);
 #endif
 

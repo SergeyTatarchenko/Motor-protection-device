@@ -1,20 +1,33 @@
+/*
+	Driver for pcf8574 with lcd1602 or other;
+	version 1.1
+*/
+
 #include "pcf8574.h"
 
-/**/
-static uint8_t command_1[]={CMD1};
-static uint8_t command_2[]={CMD2};
-static uint8_t command_3[]={CMD3};
-static uint8_t command_4[]={CMD4};
-static uint8_t command_5[]={CMD5};
-static uint8_t command_6[]={CMD6};
-static uint8_t command_7[]={CMD7};
-static uint8_t command_8[]={CMD8};
-static uint8_t command_9[]={CMD9};
-
-/*lcd basic configuration */
-uint_least8_t Init_LCD_1602(void){
-	
+/*lcd 1602 basic configuration for Arduino i2c lcd module */
+uint_least8_t Init_LCD_1602(void)
+{
 	uint_least8_t state;
+	/**/
+	uint8_t command_1[]={CMD1};
+	/**/
+	uint8_t command_2[]={CMD2};
+	/**/
+	uint8_t command_3[]={CMD3};
+	/**/
+	uint8_t command_4[]={CMD4};
+	/**/
+	uint8_t command_5[]={CMD5};
+	/**/
+	uint8_t command_6[]={CMD6};
+	/**/
+	uint8_t command_7[]={CMD7};
+	/**/
+	uint8_t command_8[]={CMD8};
+	/**/
+	uint8_t command_9[]={CMD9};
+ 	
 	DELAY(100);
 	state =  I2CSendData(PCF8574_ADRESS,command_1,sizeof(command_1));
 	DELAY(10);
@@ -37,22 +50,29 @@ uint_least8_t Init_LCD_1602(void){
 	return state;
 }
 
-uint_least8_t LCD_Reset(){
+/* lcd reset and clean */
+uint_least8_t LCD_Reset()
+{
 	uint_least8_t state;
 	
 	return state;
 }
-uint_least8_t LCD_ClearDisplay(){
+
+/* clean lcd display */
+uint_least8_t LCD_ClearDisplay()
+{
 	
+	uint8_t command_6[]={CMD6};
 	uint_least8_t state;
-	
 	state &= I2CSendData(PCF8574_ADRESS,command_6,sizeof(command_6));
 	DELAY(10);
 	
 	return state;
 }
 
-uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress){
+/*setup DRAM adress and text pointer*/
+uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress)
+{
 	
 	uint8_t buf[4] = {0x0C,0x08,0x0C,0x08};
 	uint8_t letter;
@@ -79,6 +99,7 @@ uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress){
 	return state;
 }
 
+/*send single letter to lcd*/
 void LCD_SendChar(char CharToSend){
 	uint8_t temp;
 	/*vatiable for transmit */
@@ -100,6 +121,7 @@ void LCD_SendChar(char CharToSend){
 	DELAY(2);
 }
 
+/*lcd write array of chars*/
 void LCD_Write(char *array){
 	
 	int max_line_size = 40,array_size = sizeof(array);

@@ -30,10 +30,11 @@ void main_TASK(void *pvParameters){
 		
 		adc_conversion();
 		frequency_conversion();
-		/*not tested*/
 		power_factor_conversion();
 		
-		
+	//	phase_imbalance_control(&ErrorArray,&MotorConfiguration,&CapturedVoltage);
+	//	freq_control(&CapturedPeriod,&ErrorArray,&MotorConfiguration);
+	//	freq_watchdog(&WatchDog,&ErrorArray);
 	//	CheckPowerNetwork();
 		
 		/*working part*/
@@ -90,13 +91,7 @@ void SysInit(){
 	
 	WatchDogPointer = & WatchDog;
 	MotorConfigurationPointer = & MotorConfiguration;
-	
-	/*initial parameter loading*/
-	MotorConfiguration.MaxPhaseVoltage = 0;
-	MotorConfiguration.MinPhaseVoltage = 0;
-	MotorConfiguration.MinPhasefrequency = (uint16_t)DEFAULT_FREQUENCY_MIN;
-	MotorConfiguration.MaxPhasefrequency = (uint16_t)DEFAULT_FREQUENCY_MAX;
-	
+		
 }
 
 void frequency_conversion(){
@@ -111,7 +106,7 @@ void frequency_conversion(){
 		TIM15_CCR1_Array[0]=0;
 		TIM15_CCR1_Array[1]=0;
 		/*get value in Hz*/
-		CapturedPeriodPointer->PhaseA_Frequency = (1*TIMER_US)/(CapturedPeriodPointer->PhaseA_Period) + 1;
+		CapturedPeriodPointer->PhaseA_Frequency = (1*TIMER_10US)/(CapturedPeriodPointer->PhaseA_Period) + 1;
 	}
 	else{
 		if(WatchDogPointer->FrequencyPhaseA > 0){
@@ -126,7 +121,7 @@ void frequency_conversion(){
 		TIM16_CCR1_Array[0]=0;
 		TIM16_CCR1_Array[1]=0;
 		/*get value in Hz*/
-		CapturedPeriodPointer->PhaseB_Frequency = (1*TIMER_US)/(CapturedPeriodPointer->PhaseB_Period);  
+		CapturedPeriodPointer->PhaseB_Frequency = (1*TIMER_10US)/(CapturedPeriodPointer->PhaseB_Period);  
 	}else{
 		if(WatchDogPointer->FrequencyPhaseB > 0){
 			WatchDogPointer->FrequencyPhaseB--;
@@ -140,7 +135,7 @@ void frequency_conversion(){
 			TIM17_CCR1_Array[0]=0;
 			TIM17_CCR1_Array[1]=0;
 		/*get value in Hz*/
-		CapturedPeriodPointer->PhaseC_Frequency = (1*TIMER_US)/(CapturedPeriodPointer->PhaseC_Period);  
+		CapturedPeriodPointer->PhaseC_Frequency = (1*TIMER_10US)/(CapturedPeriodPointer->PhaseC_Period);  
 	}else{
 		if(WatchDogPointer->FrequencyPhaseC > 0){
 			WatchDogPointer->FrequencyPhaseC--;
