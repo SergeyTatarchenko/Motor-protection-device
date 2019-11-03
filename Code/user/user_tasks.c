@@ -23,6 +23,8 @@ void error_handler_TASK(void *pvParameters){
 void main_TASK(void *pvParameters){
 		
 		Init_LCD_1602();
+		LCD_SetLoadingWindow();
+		LCD_ClearDisplay();
 		LCD_DrawWorkspace();
 		ADC_on;
 		EnableEXTI_Interupts();
@@ -340,5 +342,55 @@ void i2c_transfer(){
 
 			break;
 		}
+
+}
+
+void LCD_DrawWorkspace(){
+	LCD_SetDRAM_Adress(DDRAM_adress_row_0 + 2);
+	LCD_Write("Vrms=");
+	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 2);
+	LCD_Write("F=");
+	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 8);
+	LCD_Write("Km=");
+}
+void LCD_SetLoadingWindow(void);
+void LCD_SetLoadingWindow()
+{
+	LCD_SetDRAM_Adress(DDRAM_adress_row_0);
+	LCD_Write("....LOADING....");
+	DELAY(100);
+	LCD_SetDRAM_Adress(DDRAM_adress_row_1);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
+	LCD_Write(".");
+	DELAY(100);
 
 }

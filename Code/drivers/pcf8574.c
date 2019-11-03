@@ -136,12 +136,3 @@ void LCD_Write(char *array){
 		LCD_SendChar(array[i]);
 	}
 }
-
-void LCD_DrawWorkspace(){
-	LCD_SetDRAM_Adress(DDRAM_adress_row_0 + 2);
-	LCD_Write("Vrms=");
-	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 2);
-	LCD_Write("F=");
-	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 8);
-	LCD_Write("Km=");
-}

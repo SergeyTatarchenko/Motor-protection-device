@@ -39,10 +39,13 @@ extern xSemaphoreHandle xErrorHandler;
 /*mutex for I2C , perform correct transmit */
 extern xSemaphoreHandle xMutex_BUS_BUSY;
 /*----------------------
-отображение на дисплее (demo)	
-----------------------*/
+
+\----------------------*/
 void i2c_transfer(void);
 void text_ascii_conversion(void);
 
+/*user functions*/
+extern void LCD_DrawWorkspace(void);
+extern void LCD_DrawBootWindow(void);
 
 #endif

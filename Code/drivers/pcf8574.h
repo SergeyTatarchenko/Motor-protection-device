@@ -27,16 +27,11 @@
 #define CMD9    0x8C,0x88,0x0C,0x08     /*display led on, set DRAM adress 0x00*/
 
 /*service functions*/
-extern uint_least8_t Init_LCD_1602(void);
-extern uint_least8_t LCD_Reset(void);
-extern uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress);
-extern void LCD_SendChar(char CharToSend);
-extern void LCD_Write(char *array);
-
-extern uint_least8_t LCD_ClearDisplay(void);
-
-/*user functions*/
-extern void LCD_DrawWorkspace(void);
-extern void LCD_DrawBootWindow(void);
+ uint_least8_t Init_LCD_1602(void);
+uint_least8_t LCD_Reset(void);
+uint_least8_t LCD_SetDRAM_Adress(uint8_t DRAM_adress);
+uint_least8_t LCD_ClearDisplay(void);
+void LCD_SendChar(char CharToSend);
+void LCD_Write(char *array);
 
 #endif
