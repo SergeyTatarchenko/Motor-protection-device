@@ -377,7 +377,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\Code\Drivers;.\Code\system\include;.\Code\user;.\Code\FreeRTOS\include;.\Code\KEIL_only</IncludePath>
+              <IncludePath>.\Code\Drivers;.\Code\system\include;.\Code\user;.\Code\FreeRTOS\include;.\Code\KEIL_only;..\SOM\OBJ_MODEL</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -501,10 +501,15 @@
               <FileType>5</FileType>
               <FilePath>.\Code\user\constants.h</FilePath>
             </File>
+            <File>
+              <FileName>obj_model_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Code\user\obj_model_config.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>FreeRTOS</GroupName>
+          <GroupName>RTOS</GroupName>
           <Files>
             <File>
               <FileName>croutine.c</FileName>
@@ -550,6 +555,21 @@
               <FileName>port.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Code\KEIL_only\port.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>obj</GroupName>
+          <Files>
+            <File>
+              <FileName>hw_support.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOM\OBJ_MODEL\hw_support.c</FilePath>
+            </File>
+            <File>
+              <FileName>OBJ_MODEL.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOM\OBJ_MODEL\OBJ_MODEL.c</FilePath>
             </File>
           </Files>
         </Group>

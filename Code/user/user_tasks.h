@@ -22,10 +22,9 @@ extern uint32_t ContentSwitching;
 /*----------------------*/
 
 /*3 level peiority*/
-void main_TASK(void *pvParameters);
-void i2c_transfer_TASK(void *pvParameters);
+void _task_main(void *pvParameters);
 /*4 level peiority*/
-void error_handler_TASK(void *pvParameters);
+void _task_error_handler(void *pvParameters);
 /*----------------------*/	
 void SysInit(void);
 /*----------------------*/
@@ -45,7 +44,7 @@ void i2c_transfer(void);
 void text_ascii_conversion(void);
 
 /*user functions*/
-extern void LCD_DrawWorkspace(void);
-extern void LCD_DrawBootWindow(void);
+void LCD_DrawWorkspace(void);
+void LCD_SetLoadingWindow(void);
 
 #endif

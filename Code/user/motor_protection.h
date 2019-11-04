@@ -29,23 +29,6 @@
 
 #define PHASEMETER_DEFAULT	(EXTI_IMR_MR0)
 
-#define TIMER_MS    1000
-#define TIMER_10US  100000UL
-
-#define TRUE	1
-#define FALSE	0
-
-/*schematic features*/
-
-#define GREEN_LED_ON	(GPIOC->BSRR |=GPIO_BSRR_BS_9)
-#define GREEN_LED_OFF	(GPIOC->BSRR |=GPIO_BSRR_BR_9)
-
-#define BLUE_LED_ON		(GPIOC->BSRR |=GPIO_BSRR_BS_8)
-#define BLUE_LED_OFF	(GPIOC->BSRR |=GPIO_BSRR_BR_8)
-
-#define DIODE_DROP	510
-#define VOLTAGE_PREDIV	2
-
 #pragma pack(push,1)
 typedef struct{
 
@@ -132,8 +115,8 @@ typedef struct{
 	uint8_t PhaseImbalance;
 	uint16_t MaxFrequencyShift;
 	uint16_t SetupFrequency;
+	uint16_t FrequencyWatchdog;
 	
-
 } MotorConfiguration_REGISTR;
 #pragma pack(pop)
 
@@ -196,6 +179,16 @@ typedef struct{
 	}phase_failure;	
 } ErrorArray_REGISTR;
 #pragma pack(pop)
+
+
+typedef enum{
+	IDLE,			/*initial state after loading and reboot*/
+	WORKING,		/*normal mode, drive control enabled*/
+	ALARM,			/*alarm mode, triac disabled */		
+	PROGRAMMING		/*programming mode, all control disabled*/
+}STATE;
+
+extern STATE device_state;
 
 /*initial configuration*/
 extern MotorConfiguration_REGISTR MotorConfiguration;

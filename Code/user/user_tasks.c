@@ -1,6 +1,8 @@
 #include <stm32f0xx.h>
-#include <stm32f0xx.h>
 #include "user_tasks.h"
+
+//uncomment when SOM config completed
+//#include "OBJ_MODEL.h"
 
 /*sys inc*/
 #include "stm32f0xx_dma.h"
@@ -8,62 +10,13 @@
 
 uint32_t ContentSwitching = 1;
 
+STATE device_state = IDLE;
 
-void error_handler_TASK(void *pvParameters){
-	
-	for(;;){	
-		/*error waiting*/
-		xSemaphoreTake(xErrorHandler,portMAX_DELAY);
-		/*add error number return function */
-		BLUE_LED_ON;
-		while(1);
-	}		
-}
-
-void main_TASK(void *pvParameters){
-		
-		Init_LCD_1602();
-		LCD_SetLoadingWindow();
-		LCD_ClearDisplay();
-		LCD_DrawWorkspace();
-		ADC_on;
-		EnableEXTI_Interupts();
-	for(;;){
-		
-		adc_conversion();
-		frequency_conversion();
-		power_factor_conversion();
-		
-	//	phase_imbalance_control(&ErrorArray,&MotorConfiguration,&CapturedVoltage);
-	//	freq_control(&CapturedPeriod,&ErrorArray,&MotorConfiguration);
-	//	freq_watchdog(&WatchDog,&ErrorArray);
+	//phase_imbalance_control(&ErrorArray,&MotorConfiguration,&CapturedVoltage);
+	//freq_control(&CapturedPeriod,&ErrorArray,&MotorConfiguration);
+	//freq_watchdog(&WatchDog,&ErrorArray);
 	//	CheckPowerNetwork();
-		
-		/*working part*/
-		text_ascii_conversion();
-		
-		/*i2c transmit to LCD*/
-		xSemaphoreTake(xMutex_BUS_BUSY,portMAX_DELAY);
-		i2c_transfer();
-		xSemaphoreGive(xMutex_BUS_BUSY);
-		
-		vTaskDelay(100);
-	}
-}
 
-void i2c_transfer_TASK(void *pvParameters)
-{
-	for(;;)
-	{
-		/*working part*/
-		text_ascii_conversion();
-		/*i2c transmit to LCD*/
-		xSemaphoreTake(xMutex_BUS_BUSY,portMAX_DELAY);
-		i2c_transfer();
-		xSemaphoreGive(xMutex_BUS_BUSY);
-		vTaskDelay(100);
-	}
-}
 
 void SysInit(){
 	
@@ -90,18 +43,136 @@ void SysInit(){
 	PeriodLCDPointer = & PeriodLCD;
 	PowerFactorPointer = & PowerFactor;
 	PowerFactorLCDPointer = & PowerFactorLCD;
-	
 	WatchDogPointer = & WatchDog;
 	MotorConfigurationPointer = & MotorConfiguration;
-		
 }
+
+/*error handler*/
+void _task_error_handler(void *pvParameters)
+{	
+	for(;;){	
+		/*error waiting*/
+		xSemaphoreTake(xErrorHandler,portMAX_DELAY);
+	}		
+}
+
+/*led driver*/
+void _task_led(void *pvParameters)
+{	
+	static int tick = 0, tick_reload = 1000;
+	/*config led on PB1 and PB0*/
+	RCC->AHBENR  |= RCC_AHBENR_GPIOBEN;
+	GPIOB->MODER |= (GPIO_MODER_MODER0_0|GPIO_MODER_MODER1_0);
+	
+	led_0_off;
+	led_1_off;
+	for(;;)
+	{
+		switch(device_state)
+		{
+			case IDLE:
+				led_1_off;
+				if(tick%100 == 0)
+				{
+					led_0_off;	
+				}
+				else
+				{
+					led_0_on;
+				}
+			break;				
+			case WORKING:
+				led_0_on;
+				led_1_off;
+				break;
+			case ALARM:
+				led_0_off;
+				led_1_off;	
+				break;
+			case PROGRAMMING:
+				if(tick%1000 == 0)
+				{
+					led_0_off;
+					led_1_on;
+				}
+				else
+				{
+					led_0_on;
+					led_1_off;
+				}
+				break;
+		}
+		/*tick update*/
+		if(tick <= tick_reload)
+		{
+			tick++;
+		}
+		else
+		{
+			tick = 0;
+		}	
+		vTaskDelay(1);
+	}
+}
+
+/*main cycle*/
+void _task_main(void *pvParameters)
+{	
+	static uint8_t tick = 0,tick_reload = 100;
+	static const uint8_t adc_timing = 5,freq_timing = 25,i2c_update = 50;
+	
+	SysInit();/*all peripherals init*/
+	ADC_on;
+	EnableEXTI_Interupts();
+	
+	if(LCD_ENABLE)
+	{
+		Init_LCD_1602();
+		LCD_SetLoadingWindow();
+		LCD_ClearDisplay();
+		LCD_DrawWorkspace();
+	}
+	
+	for(;;){
+		power_factor_conversion();
+		
+		if(tick%adc_timing == 0)
+		{
+			adc_conversion();			/*adc conversion*/  
+		}
+		if(tick%freq_timing == 0)
+		{
+			frequency_conversion();		/*frequency and phase failure conversion*/
+		}
+		if(LCD_ENABLE)
+		{
+			if(tick%i2c_update == 0)
+			{	
+				text_ascii_conversion();
+				i2c_transfer();	
+			}
+		}
+		/*tick update*/
+		if(tick < tick_reload)
+		{
+			tick++;
+		}
+		else
+		{
+			tick = 0;
+		}
+		vTaskDelay(1);
+	}
+}
+
+
 
 void frequency_conversion(){
 	
-			DisableGeneralTimers();	
+	DisableGeneralTimers();	
 	/*get period and frequency value*/
 	if(TIM15_CCR1_Array[1] > TIM15_CCR1_Array[0]){
-		WatchDogPointer->FrequencyPhaseA = FREQUENCY_WATCHDOG_VALUE;
+		WatchDogPointer->FrequencyPhaseA = MotorConfigurationPointer->FrequencyWatchdog;
 		CapturedPeriodPointer->PhaseA_Period = (TIM15_CCR1_Array[1]-TIM15_CCR1_Array[0]);
 		TIM15->CNT = 0;
 		TIM15->CCR1 = 0;
@@ -116,7 +187,7 @@ void frequency_conversion(){
 		}
 	}	
 	if(TIM16_CCR1_Array[1] > TIM16_CCR1_Array[0]){
-		WatchDogPointer->FrequencyPhaseB = FREQUENCY_WATCHDOG_VALUE;
+		WatchDogPointer->FrequencyPhaseB = MotorConfigurationPointer->FrequencyWatchdog;
 		CapturedPeriodPointer->PhaseB_Period = (TIM16_CCR1_Array[1]-TIM16_CCR1_Array[0]);
 		TIM16->CNT = 0;
 		TIM16->CCR1 = 0;
@@ -130,7 +201,7 @@ void frequency_conversion(){
 		}
 	}
 	if(TIM17_CCR1_Array[1] > TIM17_CCR1_Array[0]){
-		WatchDogPointer->FrequencyPhaseC = FREQUENCY_WATCHDOG_VALUE;
+		WatchDogPointer->FrequencyPhaseC = MotorConfigurationPointer->FrequencyWatchdog;
 		CapturedPeriodPointer->PhaseC_Period = (TIM17_CCR1_Array[1]-TIM17_CCR1_Array[0]);
 			TIM17->CNT = 0;
 			TIM17->CCR1 = 0;
@@ -207,9 +278,7 @@ void adc_conversion(){
 }
 void power_factor_conversion(){
 	
-	EXTI->IMR &= PHASEMETER_DEFAULT;
-	/*��������� �������� Km � ������ ����*/
-	
+	EXTI->IMR &= PHASEMETER_DEFAULT;	
 	/*phase A*/
 	EXTI->IMR |= PHASEMETER_A_IRQ;
 	/*wait for conversion*/
@@ -353,44 +422,16 @@ void LCD_DrawWorkspace(){
 	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 8);
 	LCD_Write("Km=");
 }
-void LCD_SetLoadingWindow(void);
+
 void LCD_SetLoadingWindow()
 {
 	LCD_SetDRAM_Adress(DDRAM_adress_row_0);
 	LCD_Write("....LOADING....");
-	DELAY(100);
+	DELAY(150);
 	LCD_SetDRAM_Adress(DDRAM_adress_row_1);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-	LCD_Write(".");
-	DELAY(100);
-
+	for(int i = 0 ; i < 16; i++)
+	{
+		LCD_Write(".");
+		DELAY(150);
+	}
 }

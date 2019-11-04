@@ -50,13 +50,14 @@ void PowerControl()
 
 uint_least8_t power_factor_control(MotorConfiguration_REGISTR *configuration,PowerFactor_REGISTR *power_pointer)
 {
+	uint_least8_t error = FALSE;
 	/*overload control*/
 	if(power_pointer->PhaseA_Cos > configuration-> MaxPowerFactor)
 	{
 		
 	}
 	/*disbalance control*/
-	
+	return error;
 }
 	
 /*phase imbalance control, return TRUE if phase imbalance exceeds setup value */
