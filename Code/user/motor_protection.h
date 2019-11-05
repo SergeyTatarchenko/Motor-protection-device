@@ -231,12 +231,12 @@ extern char CurPhaseSeq[3];
 extern char SetPhaseSeq[3];
 
 /*ADC data from DMA transfer*/
-extern uint32_t CapturedVoltageArray[3];
+extern volatile uint32_t CapturedVoltageArray[3];
 
 /*TIM15/16/17 CCR reg data from DMA*/
-extern uint32_t TIM15_CCR1_Array[2];
-extern uint32_t TIM16_CCR1_Array[2];
-extern uint32_t TIM17_CCR1_Array[2];
+extern volatile uint32_t TIM15_CCR1_Array[2];
+extern volatile uint32_t TIM16_CCR1_Array[2];
+extern volatile uint32_t TIM17_CCR1_Array[2];
 
 /*-------------------------------------------*/
  void CheckPhaseRotation(void);

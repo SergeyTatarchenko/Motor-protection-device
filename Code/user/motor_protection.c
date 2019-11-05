@@ -35,12 +35,12 @@ PowerFactorLCD_REGISTR PowerFactorLCD;
 PowerFactorLCD_REGISTR *PowerFactorLCDPointer;
 
 /*ADC data from DMA transfer*/
-uint32_t CapturedVoltageArray[3];
+volatile uint32_t CapturedVoltageArray[3];
 
 /*TIM15/16/17 CCR reg data from DMA*/
-uint32_t TIM15_CCR1_Array[2];
-uint32_t TIM16_CCR1_Array[2];
-uint32_t TIM17_CCR1_Array[2];
+volatile uint32_t  TIM15_CCR1_Array[2];
+volatile uint32_t TIM16_CCR1_Array[2];
+volatile uint32_t TIM17_CCR1_Array[2];
 
 
 void PowerControl()
