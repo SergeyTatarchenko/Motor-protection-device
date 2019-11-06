@@ -36,12 +36,15 @@ CFLAGS += -fno-asynchronous-unwind-tables
 CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
 CFLAGS += $(include)
+#program break
+#CFLAGS += -Os
 #-------------------------------------------------------------------
+LDFLAGS += $(LDSCRIPT)
 LDFLAGS += -mcpu=cortex-m0
 LDFLAGS += -mlittle-endian
 LDFLAGS += -mthumb
-LDFLAGS += $(LDSCRIPT)
-LDFLAGS += -Wl,--gc-sections
+LDFLAGS += --specs=nosys.specs
+LDFLAGS += -Wl,-Map=Mapfile.map,--gc-sections
 #-------------------------------------------------------------------
 target: program
 	@echo "***MAKE COMPLETE***"
@@ -52,7 +55,6 @@ program: demo.elf
 	@echo "Create hex and binary file"
 	$(CP) -O ihex demo.elf demo.hex
 	$(CP) -O binary demo.elf demo.bin
-
 demo.elf: $(object_files)
 	@echo "LINKING"
 	$(LD) $(LDFLAGS) $(notdir $(object_files)) -o demo.elf
