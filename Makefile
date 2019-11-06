@@ -30,20 +30,19 @@ include := $(addprefix -I,$(include_path))
 CFLAGS += -mcpu=cortex-m0
 CFLAGS += -mlittle-endian
 CFLAGS += -mthumb
-CFLAGS += --data-sections
+CFLAGS += -fno-exceptions
+CFLAGS += -fno-unwind-tables
+CFLAGS += -fno-asynchronous-unwind-tables
 CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
-#CFLAGS += -Os -O2
 CFLAGS += $(include)
-CFLAGS += -c
 #-------------------------------------------------------------------
 LDFLAGS += -mcpu=cortex-m0
 LDFLAGS += -mlittle-endian
 LDFLAGS += -mthumb
 LDFLAGS += $(LDSCRIPT)
-LDFLAGS += -Wl,-gc-sections
+LDFLAGS += -Wl,--gc-sections
 #-------------------------------------------------------------------
-
 target: program
 	@echo "***MAKE COMPLETE***"
 	@echo "Clean temporally files..."
