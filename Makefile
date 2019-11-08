@@ -36,7 +36,7 @@ CFLAGS += -fno-asynchronous-unwind-tables
 CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
 CFLAGS += $(include)
-#program break
+#program breaks!!!
 #CFLAGS += -Os
 #-------------------------------------------------------------------
 LDFLAGS += $(LDSCRIPT)
