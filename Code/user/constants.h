@@ -30,17 +30,17 @@
 #define BLUE_LED_OFF	(GPIOC->BSRR |=GPIO_BSRR_BR_8)
 
 /*version 1.1*/
-#define led_0_on		(GPIOB->BSRR |=GPIO_BSRR_BS_0)
-#define led_0_off		(GPIOB->BSRR |=GPIO_BSRR_BR_0)
+//#define led_0_on		(GPIOB->BSRR |=GPIO_BSRR_BS_0)
+//#define led_0_off		(GPIOB->BSRR |=GPIO_BSRR_BR_0)
 
-#define led_1_on		(GPIOB->BSRR |=GPIO_BSRR_BS_1)
-#define led_1_off		(GPIOB->BSRR |=GPIO_BSRR_BR_1)
+//#define led_1_on		(GPIOB->BSRR |=GPIO_BSRR_BS_1)
+//#define led_1_off		(GPIOB->BSRR |=GPIO_BSRR_BR_1)
 
-//#define led_0_on		(GPIOC->BSRR |=GPIO_BSRR_BS_9)
-//#define led_0_off		(GPIOC->BSRR |=GPIO_BSRR_BR_9)
+#define led_0_on		(GPIOC->BSRR |=GPIO_BSRR_BS_9)
+#define led_0_off		(GPIOC->BSRR |=GPIO_BSRR_BR_9)
 
-//#define led_1_on		(GPIOC->BSRR |=GPIO_BSRR_BS_8)
-//#define led_1_off		(GPIOC->BSRR |=GPIO_BSRR_BR_8)
+#define led_1_on		(GPIOC->BSRR |=GPIO_BSRR_BS_8)
+#define led_1_off		(GPIOC->BSRR |=GPIO_BSRR_BR_8)
 
 
 /*

@@ -6,8 +6,8 @@ CC=/home/sergey/toolchain/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi-g
 LD=/home/sergey/toolchain/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi-gcc
 CP=/home/sergey/toolchain/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi-objcopy
 #-------------------------------------------------------------------
-source_dirs:= Code/FreeRTOS Code/drivers Code/system Code/user Code/GCC_only     
-include_path:= Code/drivers Code/system/include Code/FreeRTOS/include Code/user Code/GCC_only   
+source_dirs:= Code/FreeRTOS Code/drivers Code/system Code/user Code/GCC_only Code/OBJ_MODEL   
+include_path:= Code/drivers Code/system/include Code/FreeRTOS/include Code/user Code/GCC_only Code/OBJ_MODEL   
 
 LDSCRIPT=-TSTM32F030R8_FLASH.ld
 #-------------------------------------------------------------------

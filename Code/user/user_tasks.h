@@ -23,6 +23,8 @@ extern uint32_t ContentSwitching;
 
 /*3 level peiority*/
 void _task_main(void *pvParameters);
+void _task_led(void *pvParameters);
+
 /*4 level peiority*/
 void _task_error_handler(void *pvParameters);
 /*----------------------*/	
@@ -44,6 +46,9 @@ void i2c_transfer(void);
 void text_ascii_conversion(void);
 
 /*user functions*/
+void led_0_invertor(void);
+void led_1_invertor(void);
+
 void LCD_DrawWorkspace(void);
 void LCD_SetLoadingWindow(void);
 

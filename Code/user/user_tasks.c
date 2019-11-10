@@ -2,7 +2,7 @@
 #include "user_tasks.h"
 
 //uncomment when SOM config completed
-//#include "OBJ_MODEL.h"
+#include "OBJ_MODEL.h"
 
 /*sys inc*/
 #include "stm32f0xx_dma.h"
@@ -10,7 +10,7 @@
 
 uint32_t ContentSwitching = 1;
 
-STATE device_state = IDLE;
+STATE device_state = PROGRAMMING;
 
 	//phase_imbalance_control(&ErrorArray,&MotorConfiguration,&CapturedVoltage);
 	//freq_control(&CapturedPeriod,&ErrorArray,&MotorConfiguration);
@@ -28,6 +28,8 @@ void SysInit(){
 	I2CInit();
 	ADC_Init();
 	usart_init();
+	usart_speed(9600);	
+	
 	GeneralTimerConfig();
 	DMA_InitTIM15();
 	DMA_InitTIM16();
@@ -35,7 +37,7 @@ void SysInit(){
 	DMA_InitADC();
 	EXTI_Init();
 	NVIC_Init();
-	
+
 	/*start I/O model*/
 	CapturedVoltagePointer =& CapturedVoltage;
 	VoltageTextLCDPointer =& VoltageTextLCD;
@@ -45,6 +47,7 @@ void SysInit(){
 	PowerFactorLCDPointer = & PowerFactorLCD;
 	WatchDogPointer = & WatchDog;
 	MotorConfigurationPointer = & MotorConfiguration;
+	SOM_Init();
 }
 
 /*error handler*/
@@ -59,7 +62,7 @@ void _task_error_handler(void *pvParameters)
 /*led driver*/
 void _task_led(void *pvParameters)
 {	
-	static int tick = 0, tick_reload = 1000;
+	static int tick = 0, tick_reload = 1000000;
 	/*config led on PB1 and PB0*/
 	RCC->AHBENR  |= RCC_AHBENR_GPIOBEN;
 	GPIOB->MODER |= (GPIO_MODER_MODER0_0|GPIO_MODER_MODER1_0);
@@ -74,11 +77,7 @@ void _task_led(void *pvParameters)
 				led_1_off;
 				if(tick%100 == 0)
 				{
-					led_0_off;	
-				}
-				else
-				{
-					led_0_on;
+				led_0_invertor();	
 				}
 			break;				
 			case WORKING:
@@ -87,18 +86,13 @@ void _task_led(void *pvParameters)
 				break;
 			case ALARM:
 				led_0_off;
-				led_1_off;	
+				led_1_on;	
 				break;
 			case PROGRAMMING:
 				if(tick%1000 == 0)
 				{
-					led_0_off;
-					led_1_on;
-				}
-				else
-				{
-					led_0_on;
-					led_1_off;
+					led_1_invertor();
+					led_0_invertor();
 				}
 				break;
 		}
@@ -120,8 +114,6 @@ void _task_main(void *pvParameters)
 {	
 	static uint8_t tick = 0,tick_reload = 100;
 	static const uint8_t adc_timing = 5,freq_timing = 25,i2c_update = 50;
-	
-	SysInit();/*all peripherals init*/
 	ADC_on;
 	EnableEXTI_Interupts();
 	
@@ -132,9 +124,9 @@ void _task_main(void *pvParameters)
 		LCD_ClearDisplay();
 		LCD_DrawWorkspace();
 	}
-	
 	for(;;){
-		power_factor_conversion();
+		//power_factor_conversion();
+		
 		
 		if(tick%adc_timing == 0)
 		{
@@ -163,6 +155,34 @@ void _task_main(void *pvParameters)
 		}
 		vTaskDelay(1);
 	}
+}
+
+void led_0_invertor(void)
+{
+	static uint8_t invertor = 0;
+	if(invertor)
+	{
+		led_0_off;
+	}
+	else
+	{
+		led_0_on;
+	}
+	invertor = ~invertor;
+}
+
+void led_1_invertor(void)
+{
+	static uint8_t invertor = 0;
+	if(invertor)
+	{
+		led_1_off;
+	}
+	else
+	{
+		led_1_on;
+	}
+	invertor = ~invertor;
 }
 
 

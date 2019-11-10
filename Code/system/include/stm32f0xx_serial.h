@@ -5,5 +5,5 @@
 /*-------------------------------------------*/
 
 void usart_init(void);
-extern void usart_speed(uint32_t usartdiv);
+void usart_speed(uint32_t baudrate);
 #endif
