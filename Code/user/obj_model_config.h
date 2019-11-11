@@ -34,10 +34,10 @@
 	#define MES_BUF_SIZE		5
 
 	#if HARDWARE_OBJECT == TRUE
-		#define NUM_OF_HWOBJ    50
+		#define NUM_OF_HWOBJ    0
 	#endif
 	#if OBJECT_TIMER == TRUE
-		#define NUM_OF_TIMER    20
+		#define NUM_OF_TIMER    2
 	#endif
 
 	#ifndef TARGET

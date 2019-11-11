@@ -190,6 +190,16 @@ typedef enum{
 
 extern STATE device_state;
 
+typedef struct {
+	unsigned PhaseA_TimerOn:1;
+	unsigned PhaseB_TimerOn:1;
+	unsigned PhaseC_TimerOn:1;
+	unsigned PhaseA_TimerOverload:1;
+	unsigned PhaseB_TimerOverload:1;
+	unsigned PhaseC_TimerOverload:1;
+	
+}PowerFactorTypeDef;
+
 /*initial configuration*/
 extern MotorConfiguration_REGISTR MotorConfiguration;
 extern MotorConfiguration_REGISTR *MotorConfigurationPointer;

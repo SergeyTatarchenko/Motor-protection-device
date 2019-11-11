@@ -12,10 +12,10 @@ void GeneralTimerConfig(){
 	
 	/*TIM15 CH1 on PB14*/
 	GPIOB->AFR[1] |= (1<<24);
-	/*TIM17 CH1 on PB9*/
-	GPIOB->AFR[1] |= (2<<4);
 	/*TIM16 CH1 on PB8*/
 	GPIOB->AFR[1] |= (2);
+	/*TIM17 CH1 on PB9*/
+	GPIOB->AFR[1] |= (2<<4);
 	
 	/*AF on PB14*/
 	GPIOB->MODER 	|= GPIO_MODER_MODER14_1;
@@ -27,7 +27,7 @@ void GeneralTimerConfig(){
 	/*TIM15/16/17 used for background frequency measurement*/
 	
 	/******** TIM15 config*********/
-	/*Get 1MHz timer*/
+	/*Get 100KHz timer*/
 	TIM15->PSC = TIMER_PSC_1;
 	/*select TI1 for TIM15_CH1*/
 	TIM15->CCMR1 |= TIM_CCMR1_CC1S_0;	
@@ -40,7 +40,7 @@ void GeneralTimerConfig(){
 	/*CCP enable*/
   	TIM15->CCER |= TIM_CCER_CC1E;         
 	/******** TIM16 config*********/
-  	/*Get 1KHz timer*/
+  	/*Get 100KHz timer*/
 	TIM16->PSC = TIMER_PSC_1;
 	/*select TI1 for TIM15_CH1*/
 	TIM16->CCMR1 |= TIM_CCMR1_CC1S_0;
@@ -53,10 +53,8 @@ void GeneralTimerConfig(){
 	TIM16->CCER &= ~TIM_CCER_CC1P;
 	/*CCP enable*/
 	TIM16->CCER |= TIM_CCER_CC1E;   
-
   /******** TIM17 config*********/
-  	
-  /*Get 1KHz timer*/
+  /*Get 100KHz timer*/
 	TIM17->PSC = TIMER_PSC_1;
 	/*select TI1 for TIM15_CH1*/
 	TIM17->CCMR1 |= TIM_CCMR1_CC1S_0;
@@ -68,8 +66,7 @@ void GeneralTimerConfig(){
   	TIM17->CCER &= ~TIM_CCER_CC1P;
 	/*CCP enable*/
   	TIM17->CCER |= TIM_CCER_CC1E; 
-	
-	
+
 	/*TIM3/6/14 used to implement a phase meter*/
 	TIM3->PSC = TIMER_PSC_1;
 	TIM6->PSC = TIMER_PSC_1;
@@ -77,7 +74,9 @@ void GeneralTimerConfig(){
 	
 }
 
-void EnableGeneralTimers(){
+/*enable and disable timers for frequency conversion with CCP module*/
+void EnableGeneralTimers()
+{
 	
 	TIM15->CR1 |= TIM_CR1_CEN; 
 	TIM16->CR1 |= TIM_CR1_CEN;
@@ -88,7 +87,8 @@ void EnableGeneralTimers(){
 	TIM17->CCER |= TIM_CCER_CC1E;
 }
 
-void DisableGeneralTimers(){
+void DisableGeneralTimers()
+{
 
 	TIM15->CR1 &= ~TIM_CR1_CEN; 
 	TIM16->CR1 &= ~TIM_CR1_CEN; 

@@ -18,7 +18,8 @@ STATE device_state = PROGRAMMING;
 	//	CheckPowerNetwork();
 
 
-void SysInit(){
+void SysInit()
+{
 	
 	/*init led on Discovery board */
 	RCC->AHBENR  |= RCC_AHBENR_GPIOCEN;
@@ -38,7 +39,6 @@ void SysInit(){
 	EXTI_Init();
 	NVIC_Init();
 
-	/*start I/O model*/
 	CapturedVoltagePointer =& CapturedVoltage;
 	VoltageTextLCDPointer =& VoltageTextLCD;
 	CapturedPeriodPointer =&  CapturedPeriod;
@@ -47,6 +47,7 @@ void SysInit(){
 	PowerFactorLCDPointer = & PowerFactorLCD;
 	WatchDogPointer = & WatchDog;
 	MotorConfigurationPointer = & MotorConfiguration;
+	/*start I/O model*/
 	SOM_Init();
 }
 
@@ -59,7 +60,7 @@ void _task_error_handler(void *pvParameters)
 	}		
 }
 
-/*led driver*/
+/*led driver 1 ms tick*/
 void _task_led(void *pvParameters)
 {	
 	static int tick = 0, tick_reload = 1000000;
@@ -109,7 +110,7 @@ void _task_led(void *pvParameters)
 	}
 }
 
-/*main cycle*/
+/*main cycle 1 ms tick*/
 void _task_main(void *pvParameters)
 {	
 	static uint8_t tick = 0,tick_reload = 100;
@@ -157,6 +158,7 @@ void _task_main(void *pvParameters)
 	}
 }
 
+/**/
 void led_0_invertor(void)
 {
 	static uint8_t invertor = 0;
@@ -171,6 +173,7 @@ void led_0_invertor(void)
 	invertor = ~invertor;
 }
 
+/**/
 void led_1_invertor(void)
 {
 	static uint8_t invertor = 0;

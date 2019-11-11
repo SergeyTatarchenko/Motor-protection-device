@@ -1,9 +1,6 @@
 #ifndef USER_TASKS_H
 #define USER_TASKS_H
 
-
-#define TRUE	1
-#define FALSE	0
 /*----------------------*/
 #include "FreeRTOS.h"
 #include "task.h"
@@ -15,6 +12,7 @@
 #include "stm32f0xx_i2c.h"
 #include "stm32f0xx_tim.h"
 #include "stm32f0xx_serial.h"
+/*----------------------*/
 #include "pcf8574.h"
 #include "motor_protection.h"
 /*----------------------*/
