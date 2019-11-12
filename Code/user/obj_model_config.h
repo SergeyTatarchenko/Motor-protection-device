@@ -23,7 +23,9 @@
 /*-----------------------------------------------
 ************SOM memory usage config**************
 -----------------------------------------------*/
-
+#define TARGET = 3	
+#include "B3.h"
+	
 #if SOM_MODE == APP_MODE
 	
 	#define HARDWARE_OBJECT FALSE
@@ -39,10 +41,11 @@
 	#if OBJECT_TIMER == TRUE
 		#define NUM_OF_TIMER    2
 	#endif
-
+	
 	#ifndef TARGET
 		#include "DEFAULT.h"
 	#endif
+	
 #endif
 
 #if RTOS_USAGE == TRUE

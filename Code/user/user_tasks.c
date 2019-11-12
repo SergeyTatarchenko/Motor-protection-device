@@ -32,10 +32,11 @@ void SysInit()
 	usart_speed(9600);	
 	
 	GeneralTimerConfig();
-	DMA_InitTIM15();
-	DMA_InitTIM16();
-	DMA_InitTIM17();
+	
 	DMA_InitADC();
+	DMA_init_for_frequency_measurment();
+	DMA_init_for_USART();
+	
 	EXTI_Init();
 	NVIC_Init();
 
@@ -187,8 +188,6 @@ void led_1_invertor(void)
 	}
 	invertor = ~invertor;
 }
-
-
 
 void frequency_conversion(){
 	
@@ -437,7 +436,14 @@ void i2c_transfer(){
 
 }
 
-void LCD_DrawWorkspace(){
+void send_usart_message(uint8_t *message,uint32_t buf_size)
+{
+	DMA_Ch4_Reload(message,buf_size);
+}
+
+
+void LCD_DrawWorkspace()
+{
 	LCD_SetDRAM_Adress(DDRAM_adress_row_0 + 2);
 	LCD_Write("Vrms=");
 	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 2);

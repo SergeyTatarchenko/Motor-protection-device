@@ -4,9 +4,10 @@
 #include "stm32f0xx.h"
 
 #include "motor_protection.h"
+#include "OBJ_MODEL.h"
 
-extern void DMA_InitADC(void);
-extern void DMA_InitTIM15(void);
-extern void DMA_InitTIM16(void);
-extern void DMA_InitTIM17(void);
+void DMA_InitADC(void);
+void DMA_init_for_frequency_measurment(void);
+void DMA_init_for_USART(void);
+void DMA_Ch4_Reload(uint8_t *message, int new_buf_size);
 #endif
