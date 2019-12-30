@@ -27,6 +27,8 @@ void _task_led(void *pvParameters);
 void _task_error_handler(void *pvParameters);
 /*----------------------*/	
 void SysInit(void);
+void mcu_gpio_init(void);
+void mcu_peripheral_init(void);
 /*----------------------*/
 void frequency_conversion(void);
 void adc_conversion(void);

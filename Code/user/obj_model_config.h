@@ -24,7 +24,6 @@
 ************SOM memory usage config**************
 -----------------------------------------------*/
 #define TARGET = 3	
-#include "B3.h"
 	
 #if SOM_MODE == APP_MODE
 	

@@ -6,6 +6,8 @@
 #include "motor_protection.h"
 #include "OBJ_MODEL.h"
 
+void  DMA_Init(void);
+
 void DMA_InitADC(void);
 void DMA_init_for_frequency_measurment(void);
 void DMA_init_for_USART(void);

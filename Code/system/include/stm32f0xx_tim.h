@@ -21,7 +21,7 @@
 
 /*-----------global function prototypes---------*/
 
-extern void GeneralTimerConfig(void);
+extern void TIMConfig(void);
 extern void EnableGeneralTimers(void);
 extern void DisableGeneralTimers(void);
 

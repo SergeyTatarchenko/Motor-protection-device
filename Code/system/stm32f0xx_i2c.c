@@ -2,21 +2,15 @@
 /*************************************************
 Init I2C module, Master mode, speed 400 KHz
 *************************************************/
-void I2CInit(){
+void I2CInit()
+{
 	/*enable clock for I2C1 and GPIOB*/
 	RCC->AHBENR  |= RCC_AHBENR_GPIOBEN;
 	RCC->APB1ENR |= RCC_APB1ENR_I2C1EN; 
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGCOMPEN;
 	/* calculated in I2C timing configuration tool*/
 	I2C1->TIMINGR = 0x00901A53;
-	I2C1->CR1 |= I2C_CR1_PE;
-	
-	/*AF1 (I2C) on PB6(SCL) and PB7(SDA) */
-	GPIOB->AFR[0] |= (1<<24)|(1<<28);
-	GPIOB->MODER 	|=  (GPIO_MODER_MODER7_1|GPIO_MODER_MODER6_1);
-	GPIOB->OTYPER	|=  (GPIO_OTYPER_OT_7|GPIO_OTYPER_OT_6);
-	GPIOB->BSRR |=GPIO_BSRR_BS_6|GPIO_BSRR_BS_7;
-
+	I2C1->CR1 |= I2C_CR1_PE;	
 }
  
 uint_least8_t	I2CSendData (uint8_t adress,uint8_t *data, int lenght){

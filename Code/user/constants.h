@@ -54,12 +54,13 @@ PC1,PC2,PC3,PC4,PC5,PC6 - config for phase rotation,power factor and angle shear
 PA9,PA10                - config for USART receive/transmit (SOM usage optional)
 
 version 1.1 mcu - stm32f030c8t6;
-
-PA1,PA2,PA3 			- config for ADC conversion;
-PB6, PB7 				- config for I2C transmit; <avaliable on A.0>
-PB8, PB9, PB14			- config for frequency confersion;
-PB0, PB1                - config for led control;  
+PA1,PA2,PA3 			   - config for ADC conversion;
+PB6, PB7 				   - config for I2C transmit; <avaliable on A.0>
+PB8, PB9, PB14			   - config for frequency confersion;
+PA0                        - config for triac control;
+PA8                        - config for temperature measurement;
+PB0, PB1                   - config for led control;  
 PA4,PA5,PA6,PB10,PB11,PB12 - config for phase rotation,power factor and angle shear conversion,
-PA9,PA10                - config for USART receive/transmit (SOM usage optional)
+PA9,PA10                   - config for USART receive/transmit (SOM usage optional)
 */
 #endif

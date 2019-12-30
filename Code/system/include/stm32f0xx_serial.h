@@ -4,6 +4,6 @@
 #include "stm32f0xx.h"
 /*-------------------------------------------*/
 
-void usart_init(void);
+void USART_init(void);
 void usart_speed(uint32_t baudrate);
 #endif

@@ -1,6 +1,8 @@
 #include "stm32f0xx_tim.h"
 
-void GeneralTimerConfig(){
+
+
+void TIMConfig(){
 		
 	/*enable clock for TIM15/16/17*/
 	RCC->APB2ENR |= RCC_APB2ENR_TIM15EN|RCC_APB2ENR_TIM16EN|RCC_APB2ENR_TIM17EN;

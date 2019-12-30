@@ -1,11 +1,7 @@
 #include "stm32f0xx_serial.h"
 
-void usart_init(){
-	/*PA9 - TX PA10 - RX */	
-	RCC->AHBENR    |= RCC_AHBENR_GPIOAEN;
-	GPIOA->MODER   |= (GPIO_MODER_MODER10_1|GPIO_MODER_MODER9_1);
-	GPIOA->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR9|GPIO_OSPEEDR_OSPEEDR10);    
-	GPIOA->AFR[1] |= ((1<<4)|(1<<8));	
+void USART_init()
+{
 	/*usart config*/
 	RCC->CFGR3   |=  RCC_CFGR3_USART1SW_0; 
 	RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
