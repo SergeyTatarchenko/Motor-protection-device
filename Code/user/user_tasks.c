@@ -102,7 +102,6 @@ void SysInit()
 	mcu_gpio_init();
 	mcu_peripheral_init();
 	
-	
 	CapturedVoltagePointer =& CapturedVoltage;
 	VoltageTextLCDPointer =& VoltageTextLCD;
 	CapturedPeriodPointer =&  CapturedPeriod;

@@ -12,8 +12,9 @@ xSemaphoreHandle xMutex_BUS_BUSY;
 
 int Init_(void);
 
-/*main*/
-int main(){
+int main()
+{
+	SysInit();/*all peripherals init*/
 	if(Init_())
 	{
 		vTaskStartScheduler();/*run RTOS*/
@@ -27,7 +28,6 @@ int Init_()
 	BaseType_t TaskCreation;
 	xErrorHandler = xSemaphoreCreateBinary();
 	xMutex_BUS_BUSY = xSemaphoreCreateMutex();
-	SysInit();/*all peripherals init*/
 	TaskCreation =	xTaskCreate(&_task_error_handler,"error handler",configMINIMAL_STACK_SIZE, NULL, 4 , NULL );
 	TaskCreation &=	xTaskCreate(&_task_main,"main cycle",configMINIMAL_STACK_SIZE, NULL, 3 , NULL );	
 	TaskCreation &=	xTaskCreate(&_task_led ,"led",configMINIMAL_STACK_SIZE, NULL, 3 , NULL );

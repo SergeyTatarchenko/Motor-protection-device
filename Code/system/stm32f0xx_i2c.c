@@ -4,8 +4,6 @@ Init I2C module, Master mode, speed 400 KHz
 *************************************************/
 void I2CInit()
 {
-	/*enable clock for I2C1 and GPIOB*/
-	RCC->AHBENR  |= RCC_AHBENR_GPIOBEN;
 	RCC->APB1ENR |= RCC_APB1ENR_I2C1EN; 
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGCOMPEN;
 	/* calculated in I2C timing configuration tool*/
