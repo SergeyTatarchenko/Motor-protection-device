@@ -506,6 +506,11 @@
               <FileType>5</FileType>
               <FilePath>.\Code\user\obj_model_config.h</FilePath>
             </File>
+            <File>
+              <FileName>mcu_configuration.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\user\mcu_configuration.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

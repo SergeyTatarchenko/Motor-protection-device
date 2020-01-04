@@ -4,7 +4,7 @@
 #include "stm32f0xx.h"
 #include "stm32f0xx_tim.h"
 #include "constants.h"
-
+/*----------------------------------------------------------------------*/
 #define DEFAULT_VOLTAGE_BUF_SIZE            3
 #define DEFAULT_PERIOD_BUF_SIZE             3
 #define DEFAULT_POWER_FACTOR_BUF_SIZE       3
@@ -28,7 +28,7 @@
 #define PHROT_CHECK_IRQ     (EXTI_IMR_MR1|EXTI_IMR_MR3|EXTI_IMR_MR5)
 
 #define PHASEMETER_DEFAULT	(EXTI_IMR_MR0)
-
+/*----------------------------------------------------------------------*/
 #pragma pack(push,1)
 typedef struct{
 
@@ -248,7 +248,7 @@ extern volatile uint32_t TIM15_CCR1_Array[2];
 extern volatile uint32_t TIM16_CCR1_Array[2];
 extern volatile uint32_t TIM17_CCR1_Array[2];
 
-/*-------------------------------------------*/
+/*----------------------------------------------------------------------*/
  void CheckPhaseRotation(void);
  void AngleShearConversion(void);
  uint32_t itoa(int i,uint8_t *buff, uint8_t MesSize);
@@ -261,5 +261,5 @@ uint_least8_t phase_imbalance_control(ErrorArray_REGISTR* error_pointer,MotorCon
  uint_least8_t freq_control(CapturedPeriod_REGISTR *freq_pointer,ErrorArray_REGISTR* error_pointer,MotorConfiguration_REGISTR *configuration);
 /*phase failure control*/
 uint_least8_t freq_watchdog(WatchDog_REGISTR *watchdog_pointer,ErrorArray_REGISTR* error_pointer);
-#endif
 
+#endif

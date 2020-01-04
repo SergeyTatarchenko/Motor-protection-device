@@ -1,5 +1,6 @@
-#include "motor_protection.h"
 
+#include "motor_protection.h"
+/*----------------------------------------------------------------------*/
 /*initial configuration*/
 MotorConfiguration_REGISTR MotorConfiguration;
 MotorConfiguration_REGISTR *MotorConfigurationPointer;
@@ -41,7 +42,7 @@ volatile uint32_t CapturedVoltageArray[3];
 volatile uint32_t  TIM15_CCR1_Array[2];
 volatile uint32_t TIM16_CCR1_Array[2];
 volatile uint32_t TIM17_CCR1_Array[2];
-
+/*----------------------------------------------------------------------*/
 
 void PowerControl()
 {

@@ -1,4 +1,5 @@
 /*-----------------------------------------*/	
+#include "mcu_configuration.h"
 #include "user_tasks.h"
 /*-----------------------------------------*/
 #include "FreeRTOS.h"
@@ -28,6 +29,7 @@ int Init_()
 	BaseType_t TaskCreation;
 	xErrorHandler = xSemaphoreCreateBinary();
 	xMutex_BUS_BUSY = xSemaphoreCreateMutex();
+	
 	TaskCreation =	xTaskCreate(&_task_error_handler,"error handler",configMINIMAL_STACK_SIZE, NULL, 4 , NULL );
 	TaskCreation &=	xTaskCreate(&_task_main,"main cycle",configMINIMAL_STACK_SIZE, NULL, 3 , NULL );	
 	TaskCreation &=	xTaskCreate(&_task_led ,"led",configMINIMAL_STACK_SIZE, NULL, 3 , NULL );

@@ -1,118 +1,13 @@
 #include <stm32f0xx.h>
 #include "user_tasks.h"
+#include "mcu_configuration.h"
 
-//uncomment when SOM config completed
-/*sys inc*/
-#include "stm32f0xx_dma.h"
-#include "stm32f0xx_ext.h"
-
-uint32_t ContentSwitching = 1;
-
+uint32_t ContentSwitching = 1; /*debug with LCD*/
 STATE device_state = PROGRAMMING;
 
-/*----------------------------------------------------------------------
-general microcontroller pin configuration
-------------------------------------------------------------------------*/
-void mcu_gpio_init(void)
-{
-	/*mcu pin configuration*/
-	RCC->AHBENR  |= RCC_AHBENR_GPIOAEN;
-	RCC->AHBENR  |= RCC_AHBENR_GPIOBEN;
-	/*----------------------------ADC unit------------------------------*/
-	/*
-	PA1, PA2, PA3, PA7 config in analog mode
-	*/	
-	GPIOA->MODER   |= (GPIO_MODER_MODER1|GPIO_MODER_MODER2|
-	                   GPIO_MODER_MODER3|GPIO_MODER_MODER7);
-	GPIOA->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR1|GPIO_OSPEEDR_OSPEEDR2|
-	                   GPIO_OSPEEDR_OSPEEDR3|GPIO_OSPEEDR_OSPEEDR7);
-	/*----------------------------I2C unit------------------------------*/
-	/*
-	PB6, PB7 config as AF1 (I2C )
-	*/
-	GPIOB->MODER   |=  (GPIO_MODER_MODER7_1|GPIO_MODER_MODER6_1);
-	GPIOB->OTYPER  |=  (GPIO_OTYPER_OT_7|GPIO_OTYPER_OT_6);
-	GPIOB->AFR[0]  |=  ((1<<24)|(1<<28));
-	GPIOB->BSRR    |=  (GPIO_BSRR_BS_6|GPIO_BSRR_BS_7);
-	/*---------------------------CCP unit ------------------------------*/
-	/*
-	PB8 config as AF2 (TIM16), PB9 config as AF2 (TIM17), PB14 config as
-	AF1 (TIM15)
-	*/
-	GPIOB->MODER   |= (GPIO_MODER_MODER14_1|GPIO_MODER_MODER9_1|
-	                    GPIO_MODER_MODER8_1);
-	GPIOB->AFR[1]  |= ((2)|(2<<4)|(1<<24));
-	/*--------------------------EXTI unit ------------------------------*/
-	/*
-	PA4, PA5, PA6, PB10, PB11, PB12 config as input with pull down 
-	*/
-	GPIOA->MODER   &= ~(GPIO_MODER_MODER4|GPIO_MODER_MODER5|
-	                    GPIO_MODER_MODER6);
-	GPIOB->MODER   &= ~(GPIO_MODER_MODER10|GPIO_MODER_MODER11|
-	                    GPIO_MODER_MODER12);
-	GPIOA->PUPDR   |= (GPIO_PUPDR_PUPDR4_1|GPIO_PUPDR_PUPDR5_1|
-	                   GPIO_PUPDR_PUPDR6_1);
-	GPIOB->PUPDR   |= (GPIO_PUPDR_PUPDR10_1|GPIO_PUPDR_PUPDR11_1|
-	                   GPIO_PUPDR_PUPDR12_1);				  
-	GPIOA->OSPEEDR |= (GPIO_OSPEEDER_OSPEEDR4|GPIO_OSPEEDER_OSPEEDR5|
-	                   GPIO_OSPEEDER_OSPEEDR6);
-	GPIOB->OSPEEDR |= (GPIO_OSPEEDER_OSPEEDR10|GPIO_OSPEEDER_OSPEEDR11|
-	                   GPIO_OSPEEDER_OSPEEDR12);
-	/*---------------------------LED unit ------------------------------*/
-	/*
-	PB0, PB1 config as output push pull
-	*/
-	GPIOB->MODER   |= (GPIO_MODER_MODER0_0|GPIO_MODER_MODER1_0);
-	/*-------------------------USART unit ------------------------------*/
-	/*
-	PA9 config as AF1 (USART TX), PA10 config as AF1 (USART RX)
-	*/
-	GPIOA->MODER   |= (GPIO_MODER_MODER9_1|GPIO_MODER_MODER10_1);
-	GPIOA->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR9|GPIO_OSPEEDR_OSPEEDR10);
-	GPIOA->AFR[1]  |= ((1<<4)|(1<<8));
-	/*--------------------TRIAC control pin-----------------------------*/
-	/*
-	PA0 config as output oped drain
-	*/
-	GPIOA->MODER   |= GPIO_MODER_MODER0_0;
-	GPIOA->OTYPER  |= GPIO_OTYPER_OT_0;
-	/*---------------------TEMP control pin-----------------------------*/
-	/*
-	PA8 config as output push pull
-	*/
-	GPIOA->MODER   |= GPIO_MODER_MODER8_0;
-}
-/*----------------------------------------------------------------------
-microcontroller peripherals configuration
-------------------------------------------------------------------------*/
-void mcu_peripheral_init()
-{
-	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGCOMPEN;      /*SYSCFG clock enable*/
-	I2CInit();
-	ADC_Init();
-	USART_init();
-	EXTI_Init();
-	NVIC_Init();
-	DMA_Init();
-	TIMConfig();
-}
-
-void SysInit()
-{
-	mcu_gpio_init();
-	mcu_peripheral_init();
-	
-	CapturedVoltagePointer =& CapturedVoltage;
-	VoltageTextLCDPointer =& VoltageTextLCD;
-	CapturedPeriodPointer =&  CapturedPeriod;
-	PeriodLCDPointer = & PeriodLCD;
-	PowerFactorPointer = & PowerFactor;
-	PowerFactorLCDPointer = & PowerFactorLCD;
-	WatchDogPointer = & WatchDog;
-	MotorConfigurationPointer = & MotorConfiguration;
-}
-
-/*error handler*/
+/*
+error handler task
+*/
 void _task_error_handler(void *pvParameters)
 {	
 	for(;;){	
@@ -121,7 +16,9 @@ void _task_error_handler(void *pvParameters)
 	}		
 }
 
-/*led driver 1 ms tick*/
+/*
+led driver 1 ms tick (debug mode)
+*/
 void _task_led(void *pvParameters)
 {	
 	static int tick = 0, tick_reload = 1000000;
@@ -217,36 +114,6 @@ void _task_main(void *pvParameters)
 		}
 		vTaskDelay(1);
 	}
-}
-
-/**/
-void led_0_invertor(void)
-{
-	static uint8_t invertor = 0;
-	if(invertor)
-	{
-		led_0_off;
-	}
-	else
-	{
-		led_0_on;
-	}
-	invertor = ~invertor;
-}
-
-/**/
-void led_1_invertor(void)
-{
-	static uint8_t invertor = 0;
-	if(invertor)
-	{
-		led_1_off;
-	}
-	else
-	{
-		led_1_on;
-	}
-	invertor = ~invertor;
 }
 
 void frequency_conversion(){
@@ -502,6 +369,102 @@ void send_usart_message(uint8_t *message,uint32_t buf_size)
 }
 
 
+/*EXTI line 0 and 1 interrupt handler*/
+void EXTI0_1_IRQHandler(){
+	
+	static portBASE_TYPE xTaskWoken = pdFALSE;
+	
+	/*interrupt on PA0, user button */
+	if(EXTI->PR & EXTI_PR_PR0){
+		
+		/*switch display image */
+		if(ContentSwitching < 3){
+			ContentSwitching++;
+		}else{
+			ContentSwitching = 1;
+		}
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR0;
+	}
+	/*start measuring the phase shift for phase A */
+	/*interrupt on PC1 */
+	if(EXTI->PR & EXTI_PR_PR1){			
+		/*start timer for fhase A shift*/
+		PHASEMETER_A_START;
+		
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR1;
+	}
+		
+	
+	if(xTaskWoken == pdTRUE){
+		taskYIELD();
+	}
+}
+
+/*EXTI line 2 and 3 interrupt handler*/
+void  EXTI2_3_IRQHandler(){
+	static portBASE_TYPE xTaskWoken = pdFALSE;
+	/*start measuring the phase shift for phase B*/
+
+	/*interrupt on PC2 */
+	if(EXTI->PR & EXTI_PR_PR2){
+		
+		/*stop timer for fhase A shift*/
+		PHASEMETER_A_STOP;
+		if(PHASEMETER_A_VALUE > 0){
+			/*get value from timer in us*/
+			PowerFactorPointer->PhaseA_Factor = PHASEMETER_A_VALUE;
+			/*clear buffer*/
+			PHASEMETER_A_VALUE = 0;	
+		}
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR2;
+	}
+
+	/*interrupt on PC3 */
+	if(EXTI->PR & EXTI_PR_PR3){
+		
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR3;
+	}
+			
+	if(xTaskWoken == pdTRUE){
+		taskYIELD();
+	}
+}
+
+/*EXTI line 4 and 5 interrupt handler*/
+void EXTI4_15_IRQHandler(){
+	
+	static portBASE_TYPE xTaskWoken = pdFALSE;
+	/*start and stop measuring the phase shift for phase C and stop for measuring phase B */
+
+	/*interrupt on PC4 */
+	if(EXTI->PR & EXTI_PR_PR4){
+		
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR4;
+	}
+
+	/*interrupt on PC5 */
+	if(EXTI->PR & EXTI_PR_PR5){
+		
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR5;
+	}
+	
+	/*interrupt on PC6 */
+	if(EXTI->PR & EXTI_PR_PR5){
+		
+		/*reset interrupt trigger*/
+		EXTI->PR |= EXTI_PR_PR6;
+	}
+
+	if(xTaskWoken == pdTRUE){
+		taskYIELD();
+	}
+}
 void LCD_DrawWorkspace()
 {
 	LCD_SetDRAM_Adress(DDRAM_adress_row_0 + 2);
