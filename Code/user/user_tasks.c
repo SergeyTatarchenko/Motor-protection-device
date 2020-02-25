@@ -78,7 +78,7 @@ void _task_main(void *pvParameters)
 	
 	if(LCD_ENABLE)
 	{
-		Init_LCD_1602();
+		LCD_Init1602();
 		LCD_SetLoadingWindow();
 		LCD_ClearDisplay();
 		LCD_DrawWorkspace();
@@ -468,22 +468,22 @@ void EXTI4_15_IRQHandler(){
 void LCD_DrawWorkspace()
 {
 	LCD_SetDRAM_Adress(DDRAM_adress_row_0 + 2);
-	LCD_Write("Vrms=");
+	LCD_WriteLine("Vrms=");
 	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 2);
-	LCD_Write("F=");
+	LCD_WriteLine("F=");
 	LCD_SetDRAM_Adress(DDRAM_adress_row_1 + 8);
-	LCD_Write("Km=");
+	LCD_WriteLine("Km=");
 }
 
 void LCD_SetLoadingWindow()
 {
 	LCD_SetDRAM_Adress(DDRAM_adress_row_0);
-	LCD_Write("....LOADING....");
+	LCD_WriteLine("....LOADING....");
 	DELAY(150);
 	LCD_SetDRAM_Adress(DDRAM_adress_row_1);
 	for(int i = 0 ; i < 16; i++)
 	{
-		LCD_Write(".");
+		LCD_WriteLine(".");
 		DELAY(150);
 	}
 }
