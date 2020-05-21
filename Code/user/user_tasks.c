@@ -2,8 +2,8 @@
 #include "user_tasks.h"
 #include "mcu_configuration.h"
 
-uint32_t ContentSwitching = 1; /*debug with LCD*/
-STATE device_state = PROGRAMMING;
+uint32_t ContentSwitching = 3; /*debug with LCD*/
+STATE device_state = IDLE;
 
 /*
 error handler task
